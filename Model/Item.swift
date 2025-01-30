@@ -1,0 +1,202 @@
+//
+//  SwiftUIView.swift
+//  StyleRaku
+//
+//  Created by Jey Hirano on 2025/01/18.
+//
+
+import SwiftUI
+import SwiftData
+
+//enum ItemType: Codable {
+//    case tops
+//    case bottoms
+//    case shoes
+//    case others
+//}
+
+enum ItemType: String, CaseIterable, Codable, Identifiable {
+    case tops = "Tops"
+    case bottoms = "Bottoms"
+    case shoes = "Shoes"
+    case others = "Others"
+    
+    var id: String { rawValue }
+}
+
+@Model
+final class Item {
+    @Attribute(.unique) var id: UUID
+    var createdAt: Date
+    var name: String
+    var descriptionText: String?
+    var type: ItemType
+    var color: String?
+    var mainImage: String?  // mainImage のファイル名（ファイルシステムに保存）
+    var subjectImage: String?  // subjectImage のファイル名（加工された画像の保存先）
+    @Attribute var images: [String]  // 複数画像のファイル名リスト（ファイルシステムに保存）
+    
+    init() {
+        self.id = UUID()
+        self.createdAt = Date()
+        self.name = ""
+        self.descriptionText = ""
+        self.type = ItemType.others
+        self.images = []
+    }
+    
+    init(name: String, descriptionText: String, type: ItemType) {
+        self.id = UUID()
+        self.createdAt = Date()
+        self.name = name
+        self.descriptionText = descriptionText
+        self.type = type
+        self.images = []
+    }
+    
+    init(name: String, type: ItemType, description: String) {
+        self.id = UUID()
+        self.createdAt = Date()
+        self.name = name
+        self.type = type
+        self.descriptionText = description
+        self.images = []
+    }
+    
+    //
+    // Color
+    //
+    
+    // String -> Color
+    func stringToColor(_ string: String) -> Color? {
+        let components = string.split(separator: ",").compactMap { Double($0) }
+        guard components.count == 4 else { return nil }
+        
+        let red = components[0]
+        let green = components[1]
+        let blue = components[2]
+        let alpha = components[3]
+        
+        return Color(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
+    }
+    
+    // Color -> String
+    func colorToString(_ color: Color) -> String {
+        let uiColor = UIColor(color) // Color を UIColor に変換
+        guard let components = uiColor.cgColor.components else { return "" }
+        
+        let red = components[0]
+        let green = components[1]
+        let blue = components[2]
+        let alpha = components.count > 3 ? components[3] : 1.0
+        
+        return "\(red),\(green),\(blue),\(alpha)"
+    }
+    
+    func setColor(_ inputColor: Color) {
+        let colorString = colorToString(inputColor)
+        self.color = colorString
+    }
+    
+    //
+    // Image
+    //
+    
+    func getMainImage() -> UIImage? {
+        guard let mainName = self.mainImage else { return nil }
+        let main = FileManagerUtil.loadImage(fileName: mainName)
+        return main
+    }
+    
+    func getSubjectImage() -> UIImage? {
+        guard let subjectName = self.subjectImage else { return nil }
+        guard let subjectImage = self.getImage(imageName: subjectName) else { return nil }
+        return subjectImage
+    }
+    
+    func getImage(imageName: String) -> UIImage? {
+        return FileManagerUtil.loadImage(fileName: imageName)
+    }
+    
+    func getImages() -> [UIImage]? {
+        var uiImages: [UIImage] = []
+        
+        for imageName in self.images {
+            guard let uiImage = self.getImage(imageName: imageName) else { continue }
+            uiImages.append(uiImage)
+        }
+        
+        if !uiImages.isEmpty {
+            return uiImages
+        } else {
+            return nil
+        }
+    }
+    
+    // imagesに追加
+    func addImage(inputImage: UIImage) -> String? {
+        guard let inputImageName = FileManagerUtil.saveImage(inputImage, fileName: FileManagerUtil.getUniqueImageFileName()) else {
+            return nil
+        }
+        images.append(inputImageName)
+        return inputImageName
+    }
+    
+    func addImage(inputImage: UIImage, fileName: String) -> String? {
+        guard let inputImageName = FileManagerUtil.saveImage(inputImage, fileName: fileName) else {
+            return nil
+        }
+        images.append(inputImageName)
+        return inputImageName
+    }
+    
+    // imageを保存
+    func saveImage(inputImage: UIImage) -> String? {
+        guard let imageName = FileManagerUtil.saveImage(inputImage, fileName: FileManagerUtil.getUniqueImageFileName()) else { return nil }
+        return imageName
+    }
+    
+    func removeImage(fileName: String) {
+        images.removeAll { $0 == fileName }
+        FileManagerUtil.deleteImage(fileName: fileName)
+    }
+    
+    func setMainImage(_ fileName: String) {
+        if let subject = self.subjectImage {
+            FileManagerUtil.deleteImage(fileName: subject)
+        }
+        
+        self.mainImage = fileName
+        print("self mainImage: \(self.mainImage ?? "no mainImage")")
+        self.setSubjectImage()
+    }
+    
+    func setSubjectImage() {
+        guard let main = getMainImage() else { return }
+        guard let subject = self.generateSubjectImage(input: main) else { return }
+        guard let subjectName = self.saveImage(inputImage: subject) else { return }
+        self.subjectImage = subjectName
+        print("setSubjectImage")
+    }
+    
+    func generateSubjectImage(input: UIImage) -> UIImage? {
+        
+        guard let cgImage = input.cgImage else {
+            print("UIImageからCGImageへの変換に失敗しました。")
+            return nil
+        }
+        let ciImage = CIImage(cgImage: cgImage)
+        print("CIImageに変換成功: \(ciImage)")
+        
+        let imageHelper = ImageVisionHelper()
+        guard let outputCIImage = imageHelper.removeBackground(from: ciImage, croppedToInstanceExtent: true)
+        else {
+            print("Subect がありません")
+            return nil
+        }
+        
+        let outputImage = UIImage(cgImage: imageHelper.render(ciImage: outputCIImage))
+        return outputImage
+    }
+    
+}
