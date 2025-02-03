@@ -57,7 +57,7 @@ struct ItemContainerView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }  label: {
-                        Image(systemName: "ellipsis")
+                        Image(systemName: "ellipsis.circle")
                             .foregroundColor(.primary)
                             .padding()
                     }

@@ -323,7 +323,7 @@ struct ItemImagesScrollView: View {
             }
             .padding()
         }
-//        .frame(height: 120)
+        .frame(height: 120)
     }
     
     private func deleteImage(_ editImage: EditImage) {

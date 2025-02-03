@@ -18,6 +18,23 @@ enum ItemViewType: String, CaseIterable, Identifiable {
     case others = "Others"
     
     var id: String { rawValue }
+    
+    func getSFSymbolName() -> String {
+        switch self {
+        case.all:
+            return "cabinet"
+        case .face:
+            return "face.smiling"
+        case .tops:
+            return "tshirt"
+        case .bottoms:
+            return "person"
+        case.shoes:
+            return "shoe"
+        case .others:
+            return "handbag"
+        }
+    }
 }
 
 @Model
