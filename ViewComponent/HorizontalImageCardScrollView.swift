@@ -18,44 +18,49 @@ struct HorizontalImageCardScrollView: View {
     
     @State var showingEditSheet: Bool = false
     
+    let isShowingSelectedItemView: Bool
+    
     var body: some View {
         VStack {
-            VStack {
-                if selectedItem == nil {
-                    Text("select Item")
-                } else {
-                    HStack {
-                        if let subject = selectedItem?.getSubjectImage() {
-                            Image(uiImage: subject)
-                                .resizable()
-                                .scaledToFit()
-                        } else {
-                            Text("no subject")
-                        }
-                        VStack {
-                            Text(selectedItem?.name ?? "no name")
-                                .font(.title)
-                                .fontWeight(.bold)
-                            Text(selectedItem?.descriptionText ?? "no description")
-                            Button(action: {
-                                self.showingEditSheet.toggle()
-                                print("Edtt!")
-                            }) {
-                                Label("Edit", systemImage: "square.and.pencil")
+            if isShowingSelectedItemView {
+                VStack {
+                    if selectedItem == nil {
+                        Text("select Item")
+                    } else {
+                        HStack {
+                            if let subject = selectedItem?.getSubjectImage() {
+                                Image(uiImage: subject)
+                                    .resizable()
+                                    .scaledToFit()
+                            } else {
+                                Text("no subject")
                             }
-                            .sheet(isPresented: $showingEditSheet) {
-                                if let selectedItem = selectedItem {
-                                    ItemEditView(
-                                        newItemToggle: false,
-                                        selectedItem: .constant(selectedItem)
-                                    )
-                                } else {
-                                    Text("No item selected")
+                            VStack {
+                                Text(selectedItem?.name ?? "no name")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                Text(selectedItem?.descriptionText ?? "no description")
+                                Button(action: {
+                                    self.showingEditSheet.toggle()
+                                    print("Edtt!")
+                                }) {
+                                    Label("Edit", systemImage: "square.and.pencil")
                                 }
-                            } // sheet
-                            
-                        }
-                    } // HStack
+                                .sheet(isPresented: $showingEditSheet) {
+                                    if let selectedItem = selectedItem {
+                                        ItemEditView(
+                                            newItemToggle: false,
+                                            selectedItem: .constant(selectedItem)
+                                        )
+                                    } else {
+                                        Text("No item selected")
+                                    }
+                                } // sheet
+                                
+                            }
+                        } // HStack
+                    }
+                    
                 }
                 
             }

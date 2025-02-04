@@ -18,6 +18,8 @@ struct ItemsView: View {
     
     @Binding var addItem: Item?
     
+    let isShowingSelectedItemView: Bool
+    
     var body: some View {
         ZStack {
             Color(.systemGray6)   // 背景色
@@ -32,7 +34,7 @@ struct ItemsView: View {
                 .padding()
                 Spacer()
                 VStack {
-                    HorizontalImageCardScrollView(selectedItemViewType: $selectedItemViewType, addItem: $addItem)
+                    HorizontalImageCardScrollView(selectedItemViewType: $selectedItemViewType, addItem: $addItem, isShowingSelectedItemView: isShowingSelectedItemView)
                 }
             }
             VStack {
