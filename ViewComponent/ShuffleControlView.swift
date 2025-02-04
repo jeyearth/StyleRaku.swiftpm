@@ -11,8 +11,21 @@ import SwiftUI
 struct ShuffleControlView: View {
     var body: some View {
         VStack {
-            Text("ShuffleControlView")
+            VStack {
+                VStack {
+                    Text("ShuffleControlView")
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .padding(10)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(.systemBackground)) // 背景色を白に設定
+            )
         }
+        .padding(.top, 10)
+        .padding([.leading, .trailing], 10)
+        .padding(.bottom, 5)
     }
 }
 
