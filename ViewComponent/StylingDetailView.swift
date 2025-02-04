@@ -16,9 +16,19 @@ struct StylingDetailView: View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
                 // 左側: ItemリストView（6割幅）
-                ItemsView(addItem: $addItem, isShowingSelectedItemView: false)
-                    .frame(width: geometry.size.width * 0.65)
-
+                ZStack {
+                    Color(.systemGray6)   // 背景色
+                    VStack {
+                        HStack {
+                            ShuffleControlView()
+                            ItemControlView()
+                        }
+                        .frame(height: geometry.size.height * 0.5)
+                        ItemsView(addItem: $addItem, isShowingSelectedItemView: false)
+                    }
+                }
+                .frame(width: geometry.size.width * 0.65)
+                
                 // 右側: プレビューView（4割幅）
                 StylePreviewView(selectedStyle: $selectedStyle, addItem: $addItem)
                     .frame(width: geometry.size.width * 0.35)
