@@ -12,12 +12,17 @@ struct ItemControlView: View {
     
     let moveButtonSize: CGFloat = 40
     
+    @State var count:Int = 0
+    
     var body: some View {
         VStack {
             VStack {
                 VStack {
                     Text("ShuffleControlView")
                     Spacer()
+                    Stepper(value: $count, in: 0...10, step: 1) {
+                        Text("Size: \(count)")
+                    }
                     VStack {
                         Button(action: { print("北ボタンが押されました") }) {
                             Image(systemName: "arrow.up.circle.fill")
@@ -48,7 +53,7 @@ struct ItemControlView: View {
                         }
                     }
                 }
-                .frame(width: 160)
+                .frame(width: 180)
                 .frame(maxHeight: .infinity)
             }
             .padding(10)
