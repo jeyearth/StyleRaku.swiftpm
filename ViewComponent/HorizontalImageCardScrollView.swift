@@ -19,6 +19,7 @@ struct HorizontalImageCardScrollView: View {
     @State var showingEditSheet: Bool = false
     
     let isShowingSelectedItemView: Bool
+    let itemContainerHeight: CGFloat
     
     var body: some View {
         VStack {
@@ -76,7 +77,8 @@ struct HorizontalImageCardScrollView: View {
                         let isSelected: Bool = (item.id == selectedItem?.id ? true : false)
                         ItemContainerView(
                             item: item,
-                            isSelected: isSelected
+                            isSelected: isSelected,
+                            itemContainerHeight: itemContainerHeight
                         )
                         .onTapGesture(perform: {
                             selectedItem = item

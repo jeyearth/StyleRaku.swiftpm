@@ -31,7 +31,7 @@ struct ContentView: View {
                         Label("Copare", systemImage: "square.and.line.vertical.and.square")
                     }
                     NavigationLink {
-                        ItemsView(addItem: .constant(Item()), isShowingSelectedItemView: true)
+                        ItemsView(addItem: .constant(Item()), isShowingSelectedItemView: true, itemContainerHeight: 260)
                     } label: {
                         Label("Items", systemImage: "cabinet")
                     }

@@ -19,6 +19,7 @@ struct ItemsView: View {
     @Binding var addItem: Item?
     
     let isShowingSelectedItemView: Bool
+    let itemContainerHeight: CGFloat
     
     var body: some View {
         ZStack {
@@ -34,7 +35,12 @@ struct ItemsView: View {
                 .padding()
                 Spacer()
                 VStack {
-                    HorizontalImageCardScrollView(selectedItemViewType: $selectedItemViewType, addItem: $addItem, isShowingSelectedItemView: isShowingSelectedItemView)
+                    HorizontalImageCardScrollView(
+                        selectedItemViewType: $selectedItemViewType,
+                        addItem: $addItem,
+                        isShowingSelectedItemView: isShowingSelectedItemView,
+                        itemContainerHeight: itemContainerHeight
+                    )
                 }
             }
             VStack {

@@ -16,11 +16,13 @@ struct ItemContainerView: View {
     @State var item: Item
     let isSelected: Bool
     @State var showingEditSheet: Bool
+    let itemContainerHeight: CGFloat
     
-    init(item: Item, isSelected: Bool) {
+    init(item: Item, isSelected: Bool, itemContainerHeight: CGFloat) {
         self.item = item
         self.isSelected = isSelected
         self.showingEditSheet = false
+        self.itemContainerHeight = itemContainerHeight
     }
     
     var body: some View {
@@ -37,12 +39,6 @@ struct ItemContainerView: View {
                     Text("no subject image")
                 }
                 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.name.isEmpty ? "no name" : item.name)
-                        .font(.headline)
-                        .fontWeight(.bold)
-                }
-                .padding(.horizontal, 8)
                 HStack {
                     Spacer()
                     Menu {
@@ -64,7 +60,7 @@ struct ItemContainerView: View {
                 }
             }
             .padding()
-            .frame(width: 200, height: 260)
+            .frame(width: itemContainerHeight * 0.8, height: itemContainerHeight)
             .background(Color(UIColor.systemBackground))
             .overlay(RoundedRectangle(cornerRadius: 10)
                 .stroke((isSelected ? Color.accentColor : Color.clear), lineWidth: 3)
@@ -92,5 +88,5 @@ struct ItemContainerView: View {
 }
 
 #Preview {
-    ItemContainerView(item: Item(name: "Hybrid Down", descriptionText: "UNIQLO UNIQLO", type: ItemType.tops), isSelected: true)
+    ItemContainerView(item: Item(name: "Hybrid Down", descriptionText: "UNIQLO UNIQLO", type: ItemType.tops), isSelected: true, itemContainerHeight: 260)
 }
