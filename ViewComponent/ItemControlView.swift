@@ -23,6 +23,18 @@ struct ItemControlView: View {
                     Stepper(value: $count, in: 0...10, step: 1) {
                         Text("Size: \(count)")
                     }
+                    
+                    HStack {
+                        Spacer()
+                        Button  {
+                            print("do align.horizontal.center")
+                        } label: {
+                            Image(systemName: "align.horizontal.center")
+                                .font(.title2)
+                                .foregroundColor(Color.secondary)
+                        }
+                    }
+                    
                     VStack {
                         Button(action: { print("北ボタンが押されました") }) {
                             Image(systemName: "arrow.up.circle.fill")
