@@ -18,8 +18,6 @@ struct ItemControlView: View {
         VStack {
             VStack {
                 VStack {
-                    Text("ShuffleControlView")
-                    Spacer()
                     Stepper(value: $count, in: 0...10, step: 1) {
                         Text("Size: \(count)")
                     }
