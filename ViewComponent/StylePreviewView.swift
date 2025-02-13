@@ -6,17 +6,22 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct StylePreviewView: View {
+    @Query var items: [Item]
     
     @Binding var selectedStyle: Style?
     @Binding var addItem: Item?
-    
+    @Binding var draggingItem: Item?
+
     @State var selectedItemType: ItemType?
+    @State private var isDropping: Bool = false  // ドロップエリア判定
     
-    init(selectedStyle: Binding<Style?>, addItem: Binding<Item?>) {
+    init(selectedStyle: Binding<Style?>, addItem: Binding<Item?>, draggingItem: Binding<Item?>) {
         self._selectedStyle = selectedStyle
         self._addItem = addItem
+        self._draggingItem = draggingItem
 
         // addItem が nil の場合の処理を追加
         if let item = addItem.wrappedValue {
@@ -68,32 +73,16 @@ struct StylePreviewView: View {
             }
             Spacer()
             VStack {
-//                GeometryReader { geometry in
-//                    ZStack {
-//                        Rectangle()
-//                            .fill(Color.blue)
-//                            .frame(width: geometry.size.width, height: geometry.size.height)
-//                        VStack {
-//                            Text("親ビューの横幅: \(geometry.size.width)")
-//                            Text("親ビューの高さ: \(geometry.size.height)")
-//                            Text("親ビューの横幅中心: \(geometry.frame(in: .local).midX)")
-//                            Text("親ビューの高さ幅中心: \(geometry.frame(in: .local).midY)")
-//                        }
-//                    }
-//                }
-                ZStack {  // VStackをZStackに変更して重ね表示
-                    // Face
-                    //                if let face = selectedStyle?.face,
-                    //                   let faceImage = face.getImage(),
-                    //                   let facePosition = selectedStyle?.facePosition {
-                    //                    itemImageView(image: faceImage, position: facePosition)
-                    //                }
-                    
+                ZStack {
                     // Tops
                     if let tops = selectedStyle?.tops,
                        let topsImage = tops.getSubjectImage(),
                        let topsPosition = selectedStyle?.topsPosition {
                         itemImageView(size: 200, type: tops.type, image: topsImage, position: topsPosition)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(draggingItem?.type == .tops ? Color.blue : Color.clear, lineWidth: 3)
+                            )
                     }
                     
                     // Bottoms
@@ -101,6 +90,10 @@ struct StylePreviewView: View {
                        let bottomsImage = bottoms.getSubjectImage(),
                        let bottomsPosition = selectedStyle?.bottomsPosition {
                         itemImageView(size: 150, type: bottoms.type, image: bottomsImage, position: bottomsPosition)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(draggingItem?.type == .bottoms ? Color.blue : Color.clear, lineWidth: 3)
+                            )
                     }
                     
                     // Shoes
@@ -108,15 +101,11 @@ struct StylePreviewView: View {
                        let shoesImage = shoes.getSubjectImage(),
                        let shoesPosition = selectedStyle?.shoesPosition {
                         itemImageView(size: 100, type: shoes.type, image: shoesImage, position: shoesPosition)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(draggingItem?.type == .shoes ? Color.blue : Color.clear, lineWidth: 3)
+                            )
                     }
-                    
-                    // Others
-                    //                ForEach(selectedStyle?.others ?? [], id: \.item.id) { itemPosition in
-                    //                    if let image = itemPosition.item.getSubjectImage() {
-                    //                        itemImageView(image: image, position: itemPosition.position)
-                    //                    }
-                    //                }
-                    
                 }
             }
             
@@ -130,10 +119,36 @@ struct StylePreviewView: View {
             }
         } // VStack
         .padding()
-        .onChange(of: addItem) {_, newItem in
+        .overlay(  // 枠線を動的に表示
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(isDropping ? Color.blue : Color.clear, lineWidth: 4)
+        )
+        .onDrop(of: ["public.text"], isTargeted: Binding(
+            get: { isDropping },
+            set: { isDropping = $0 }
+        )) { providers in
+            providers.first?.loadObject(ofClass: NSString.self) { itemID, _ in
+                if let itemID = itemID as? String, let uuid = UUID(uuidString: itemID) {
+                    DispatchQueue.main.async {
+                        if let droppedItem = findItem(by: uuid) {
+                            addItem = droppedItem
+                        }
+                    }
+                }
+            }
+            isDropping = false
+            draggingItem = nil
+            return true
+        }
+        .onChange(of: addItem) { _, _ in
             handleAddItem()
         }
     } // body
+    
+    private func findItem(by id: UUID) -> Item? {
+        return items.first { $0.id == id }
+    }
+    
 }
 
 //#Preview {

@@ -12,6 +12,7 @@ import SwiftData
 struct HorizontalImageCardScrollView: View {
     @Binding var selectedItemViewType: ItemViewType
     @Binding var addItem: Item?
+    @Binding var draggingItem: Item?
     
     @Query var items: [Item]
     @State var selectedItem: Item?
@@ -66,14 +67,12 @@ struct HorizontalImageCardScrollView: View {
                 
             }
             Spacer()
+            
+            let filteredItems = getFilteredItems()
+
             ScrollView(.horizontal, showsIndicators: true) {
                 HStack(spacing: 15) {
-                    ForEach(selectedItemViewType == .all ? items : items.filter
-                            {
-                        $0.type == self.getItemType(selectedItemViewType: self.selectedItemViewType)
-                    },
-                            id: \.self) { item in
-                        
+                    ForEach(filteredItems, id: \.self) { item in                        
                         let isSelected: Bool = (item.id == selectedItem?.id ? true : false)
                         ItemContainerView(
                             item: item,
@@ -84,6 +83,10 @@ struct HorizontalImageCardScrollView: View {
                             selectedItem = item
                             addItem = item
                         })
+                        .onDrag {
+                            draggingItem = item
+                            return NSItemProvider(object: item.id.uuidString as NSString)
+                        }
                     }
                 } // HStack
                 .padding()
@@ -95,6 +98,15 @@ struct HorizontalImageCardScrollView: View {
             selectedItem = nil
         })
         
+    }
+    
+    private func getFilteredItems() -> [Item] {
+        if selectedItemViewType == .all {
+            return items
+        } else {
+            let type = getItemType(selectedItemViewType: selectedItemViewType)
+            return items.filter { $0.type == type }
+        }
     }
     
     func getItemType(selectedItemViewType: ItemViewType) -> ItemType {

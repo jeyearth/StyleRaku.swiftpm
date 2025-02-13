@@ -17,6 +17,7 @@ struct ItemsView: View {
     @State private var selectedItemViewType = ItemViewType.all
     
     @Binding var addItem: Item?
+    @Binding var draggingItem: Item?
     
     let isShowingSelectedItemView: Bool
     let itemContainerHeight: CGFloat
@@ -38,6 +39,7 @@ struct ItemsView: View {
                     HorizontalImageCardScrollView(
                         selectedItemViewType: $selectedItemViewType,
                         addItem: $addItem,
+                        draggingItem: $draggingItem,
                         isShowingSelectedItemView: isShowingSelectedItemView,
                         itemContainerHeight: itemContainerHeight
                     )
