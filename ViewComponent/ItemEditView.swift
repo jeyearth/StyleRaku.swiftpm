@@ -131,11 +131,13 @@ struct ItemEditView: View {
         
         if newItemToggle {
             addNewItem()
+            resetState()
+            selectedItem = Item()
         } else {
             updateExistingItem()
+            resetState()
         }
         
-        resetState()
     }
     
     private func addNewItem() {
@@ -185,7 +187,6 @@ struct ItemEditView: View {
         newMainImage = nil
         favImage = nil
         newImages = []
-        selectedItem = Item()
     }
 }
 
