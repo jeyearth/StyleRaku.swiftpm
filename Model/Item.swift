@@ -24,6 +24,13 @@ enum ItemType: String, CaseIterable, Codable, Identifiable {
     var id: String { rawValue }
 }
 
+enum Season: String {
+    case spring = "Spring"
+    case summer = "Summer"
+    case autumn = "Autumn"
+    case winter = "Winter"
+}
+
 @Model
 final class Item {
     @Attribute(.unique) var id: UUID
@@ -31,6 +38,10 @@ final class Item {
     var name: String
     var descriptionText: String?
     var type: ItemType
+    var spring: Bool = true
+    var summer: Bool = true
+    var autumn: Bool = true
+    var winter: Bool = true
     var color: String?
     var mainImage: String?  // mainImage のファイル名（ファイルシステムに保存）
     var subjectImage: String?  // subjectImage のファイル名（加工された画像の保存先）

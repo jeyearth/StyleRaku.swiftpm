@@ -1,19 +1,53 @@
 //
-//  SwiftUIView.swift
+//  ShuffleData.swift
 //  StyleRaku
 //  
 //  Created by Jey Hirano on 2025/02/14
 //  
 //
 
-import SwiftUI
+import Foundation
 
-struct SwiftUIView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+final class ShuffleData {
+    
+    var topsLock: Bool = false
+    var bottomsLock: Bool = false
+    var shoesLock: Bool = false
+    
+    var spring: Bool
+    var summer: Bool
+    var autumn: Bool
+    var winter: Bool
+    
+    var items: [Item] = []
+    var filterdItems: [Item] = []
+    
+    init() {
+        self.spring = true
+        self.summer = true
+        self.autumn = true
+        self.winter = true
     }
-}
-
-#Preview {
-    SwiftUIView()
+    
+    func toggleSeason(_ season: Season) {
+        switch season {
+        case .spring:
+            self.spring.toggle()
+        case .summer:
+            self.summer.toggle()
+        case .autumn:
+            self.autumn.toggle()
+        case .winter:
+            self.winter.toggle()
+        }
+    }
+    
+    func setItems(_ items: [Item]) {
+        self.items = items
+    }
+    
+    func setFilterdItems() {
+        
+    }
+    
 }

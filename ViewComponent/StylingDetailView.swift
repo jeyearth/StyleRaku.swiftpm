@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 // 共有するモデル
 class SharedItemType: ObservableObject {
@@ -13,12 +14,13 @@ class SharedItemType: ObservableObject {
 }
 
 struct StylingDetailView: View {
+    @Query var items: [Item]
     
     @Binding var selectedStyle: Style?
     @State var addItem: Item?
     
-//    @State var draggingItemType = SharedItemType()
     @State var draggingItem: Item? = nil
+    @State var shuffleData = ShuffleData()
     
     var body: some View {
         VStack(spacing : 0) {
@@ -52,7 +54,15 @@ struct StylingDetailView: View {
             .navigationTitle(selectedStyle?.name ?? "Styling Details")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .onChange(of: items, {
+            print("items change!")
+            shuffleData.setItems(items)
+        })
+        .onAppear() {
+            shuffleData.setItems(items)
+        }
     }
+    
 }
 
 #Preview {
