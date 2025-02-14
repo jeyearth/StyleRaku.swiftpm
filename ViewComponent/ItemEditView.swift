@@ -123,7 +123,7 @@ struct ItemEditView: View {
                         saveChanges()
                         dismiss()
                     }
-                    .disabled(inputItemType == .others)
+                    .disabled(selectedUIImages.isEmpty)
                 }
             } // toolbar
         } // NavigationStack
