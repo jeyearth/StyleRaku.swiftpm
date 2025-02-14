@@ -188,8 +188,25 @@ struct FormSection: View {
     @Binding var inputItemType: ItemType
     @Binding var inputDescriptionText: String
     
+    @State var isSelectedSpring: Bool = true
+    
+    @ViewBuilder
+    private func SeasonToggleButton(season: Season) -> some View {
+        Button {
+            self.isSelectedSpring.toggle()
+        } label: {
+            HStack {
+                Text(season.rawValue)
+                Spacer()
+                Image(systemName: self.isSelectedSpring ? "checkmark.square" : "square")
+                    .resizable()
+                    .frame(width: 20, height: 20)
+            }
+        }
+    }
+    
     var body: some View {
-        Form {            
+        Form {
             Picker("Type", selection: $inputItemType) {
                 ForEach(ItemType.allCases) { type in
                     Text(type.rawValue).tag(type)
@@ -197,9 +214,17 @@ struct FormSection: View {
             }
             .pickerStyle(.menu)
             
+            Menu("Season") {
+                SeasonToggleButton(season: .spring)
+                SeasonToggleButton(season: .summer)
+                SeasonToggleButton(season: .autumn)
+                SeasonToggleButton(season: .winter)
+            }
+            .menuActionDismissBehavior(.disabled)
+            
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $inputDescriptionText)
-                    .frame(height: 150)
+                    .frame(height: 120)
                 
                 if inputDescriptionText.isEmpty {
                     Text("Description")
