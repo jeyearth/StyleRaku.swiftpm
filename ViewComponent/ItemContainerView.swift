@@ -88,5 +88,5 @@ struct ItemContainerView: View {
 }
 
 #Preview {
-    ItemContainerView(item: Item(name: "Hybrid Down", descriptionText: "UNIQLO UNIQLO", type: ItemType.tops), isSelected: true, itemContainerHeight: 260)
+    ItemContainerView(item: Item(descriptionText: "UNIQLO UNIQLO", type: ItemType.tops), isSelected: true, itemContainerHeight: 260)
 }

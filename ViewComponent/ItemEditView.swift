@@ -22,11 +22,9 @@ struct ItemEditView: View {
     
     let newItemToggle: Bool
     
-    @State private var inputName: String = ""
     @State private var inputItemType: ItemType = .others
     @State private var inputDescriptionText: String = ""
     
-//    @Binding var showingSheet: Bool
     @Binding var selectedItem: Item
     
     @State private var selectedPhotos: [PhotosPickerItem] = []
@@ -37,13 +35,11 @@ struct ItemEditView: View {
     
     init(newItemToggle: Bool, selectedItem: Binding<Item>) {
         self.newItemToggle = newItemToggle
-//        self._showingSheet = showingSheet
         self._selectedItem = selectedItem
         
         if !newItemToggle {
             let wrappedItem = selectedItem.wrappedValue
             
-            self._inputName = State(initialValue: wrappedItem.name)
             self._inputItemType = State(initialValue: wrappedItem.type)
             self._inputDescriptionText = State(initialValue: wrappedItem.descriptionText ?? "")
             self._selectedUIImages = State(initialValue: Self.initSelectedUIImages(inputItem: wrappedItem))
@@ -75,7 +71,6 @@ struct ItemEditView: View {
                     GeometryReader { geometry in
                         HStack(spacing: 16) {
                             FormSection(
-                                inputName: $inputName,
                                 inputItemType: $inputItemType,
                                 inputDescriptionText: $inputDescriptionText
                             )
@@ -114,14 +109,13 @@ struct ItemEditView: View {
                         saveChanges()
                         dismiss()
                     }
-                    .disabled(inputName.isEmpty)
+                    .disabled(inputItemType == .others)
                 }
             } // toolbar
         } // NavigationStack
     } // body
     
     private func saveChanges() {
-        selectedItem.name = inputName
         selectedItem.type = inputItemType
         selectedItem.descriptionText = inputDescriptionText
         
@@ -180,7 +174,6 @@ struct ItemEditView: View {
     }
     
     private func resetState() {
-        inputName = ""
         inputItemType = .others
         inputDescriptionText = ""
         selectedUIImages = []
@@ -191,14 +184,11 @@ struct ItemEditView: View {
 }
 
 struct FormSection: View {
-    @Binding var inputName: String
     @Binding var inputItemType: ItemType
     @Binding var inputDescriptionText: String
     
     var body: some View {
-        Form {
-            TextField("Name", text: $inputName)
-            
+        Form {            
             Picker("Type", selection: $inputItemType) {
                 ForEach(ItemType.allCases) { type in
                     Text(type.rawValue).tag(type)

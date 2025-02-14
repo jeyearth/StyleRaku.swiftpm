@@ -38,9 +38,6 @@ struct HorizontalImageCardScrollView: View {
                                 Text("no subject")
                             }
                             VStack {
-                                Text(selectedItem?.name ?? "no name")
-                                    .font(.title)
-                                    .fontWeight(.bold)
                                 Text(selectedItem?.descriptionText ?? "no description")
                                 Button(action: {
                                     self.showingEditSheet.toggle()

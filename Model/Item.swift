@@ -35,7 +35,6 @@ enum Season: String {
 final class Item {
     @Attribute(.unique) var id: UUID
     var createdAt: Date
-    var name: String
     var descriptionText: String?
     var type: ItemType
     var spring: Bool = true
@@ -50,25 +49,22 @@ final class Item {
     init() {
         self.id = UUID()
         self.createdAt = Date()
-        self.name = ""
         self.descriptionText = ""
         self.type = ItemType.others
         self.images = []
     }
     
-    init(name: String, descriptionText: String, type: ItemType) {
+    init(descriptionText: String, type: ItemType) {
         self.id = UUID()
         self.createdAt = Date()
-        self.name = name
         self.descriptionText = descriptionText
         self.type = type
         self.images = []
     }
     
-    init(name: String, type: ItemType, description: String) {
+    init(type: ItemType, description: String) {
         self.id = UUID()
         self.createdAt = Date()
-        self.name = name
         self.type = type
         self.descriptionText = description
         self.images = []
