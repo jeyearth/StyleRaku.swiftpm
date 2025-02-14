@@ -24,6 +24,10 @@ struct ItemEditView: View {
     
     @State private var inputItemType: ItemType = .others
     @State private var inputDescriptionText: String = ""
+    @State private var spring: Bool = true
+    @State private var summer: Bool = true
+    @State private var autumn: Bool = true
+    @State private var winter: Bool = true
     
     @Binding var selectedItem: Item
     
@@ -42,6 +46,11 @@ struct ItemEditView: View {
             
             self._inputItemType = State(initialValue: wrappedItem.type)
             self._inputDescriptionText = State(initialValue: wrappedItem.descriptionText ?? "")
+            self._spring = State(initialValue: wrappedItem.spring)
+            self._summer = State(initialValue: wrappedItem.summer)
+            self._autumn = State(initialValue: wrappedItem.autumn)
+            self._winter = State(initialValue: wrappedItem.winter)
+            
             self._selectedUIImages = State(initialValue: Self.initSelectedUIImages(inputItem: wrappedItem))
             if let mainImage = wrappedItem.getMainImage(),
                let mainImageName = wrappedItem.mainImage {
@@ -72,7 +81,11 @@ struct ItemEditView: View {
                         HStack(spacing: 16) {
                             FormSection(
                                 inputItemType: $inputItemType,
-                                inputDescriptionText: $inputDescriptionText
+                                inputDescriptionText: $inputDescriptionText,
+                                spring: $spring,
+                                summer: $summer,
+                                autumn: $autumn,
+                                winter: $winter
                             )
                             .frame(width: geometry.size.width * 0.6)
                             
@@ -119,6 +132,10 @@ struct ItemEditView: View {
     private func saveChanges() {
         selectedItem.type = inputItemType
         selectedItem.descriptionText = inputDescriptionText
+        selectedItem.spring = self.spring
+        selectedItem.summer = self.summer
+        selectedItem.autumn = self.autumn
+        selectedItem.winter = self.winter
         
         if favImage == nil {
             favImage = selectedUIImages.first
@@ -177,6 +194,10 @@ struct ItemEditView: View {
     private func resetState() {
         inputItemType = .others
         inputDescriptionText = ""
+        spring = true
+        summer = true
+        autumn = true
+        winter = true
         selectedUIImages = []
         newMainImage = nil
         favImage = nil
@@ -187,18 +208,22 @@ struct ItemEditView: View {
 struct FormSection: View {
     @Binding var inputItemType: ItemType
     @Binding var inputDescriptionText: String
+    @Binding var spring: Bool
+    @Binding var summer: Bool
+    @Binding var autumn: Bool
+    @Binding var winter: Bool
     
     @State var isSelectedSpring: Bool = true
     
     @ViewBuilder
-    private func SeasonToggleButton(season: Season) -> some View {
+    private func SeasonToggleButton(season: Season, isOn: Binding<Bool>) -> some View {
         Button {
-            self.isSelectedSpring.toggle()
+            isOn.wrappedValue.toggle()
         } label: {
             HStack {
                 Text(season.rawValue)
                 Spacer()
-                Image(systemName: self.isSelectedSpring ? "checkmark.square" : "square")
+                Image(systemName: isOn.wrappedValue ? "checkmark.square" : "square")
                     .resizable()
                     .frame(width: 20, height: 20)
             }
@@ -215,10 +240,10 @@ struct FormSection: View {
             .pickerStyle(.menu)
             
             Menu("Season") {
-                SeasonToggleButton(season: .spring)
-                SeasonToggleButton(season: .summer)
-                SeasonToggleButton(season: .autumn)
-                SeasonToggleButton(season: .winter)
+                SeasonToggleButton(season: .spring, isOn: $spring)
+                SeasonToggleButton(season: .summer, isOn: $summer)
+                SeasonToggleButton(season: .autumn, isOn: $autumn)
+                SeasonToggleButton(season: .winter, isOn: $winter)
             }
             .menuActionDismissBehavior(.disabled)
             
