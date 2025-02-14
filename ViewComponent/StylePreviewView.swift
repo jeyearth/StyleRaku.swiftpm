@@ -56,7 +56,6 @@ struct StylePreviewView: View {
                     .onChanged { gesture in
                         if let unwrap = selectedStyle {
                             unwrap.updatePosition(for: type, to: gesture.location)
-                            print(gesture.location)
                         }
                         self.selectedItemType = type
                     }

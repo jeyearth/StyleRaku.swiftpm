@@ -10,6 +10,9 @@ import SwiftUI
 
 struct ShuffleControlView: View {
     
+    @Binding var selectedStyle: Style?
+    @Binding var shuffleData: ShuffleData
+    
     @State private var isTopsLock: Bool = false
     @State private var isBottomsLock: Bool = false
     @State private var isShoesLock: Bool = false
@@ -29,13 +32,6 @@ struct ShuffleControlView: View {
                         .padding([.leading, .trailing], 30)
                     SeasonsSettingView()
                         .padding([.leading, .trailing], 30)
-                    
-//                    HStack {
-//                        LockButtonView()
-//                        SeasonsSettingView()
-//                    }
-                    
-//                    Spacer()
                     ShuffleButton()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -58,30 +54,34 @@ struct ShuffleControlView: View {
     @ViewBuilder
     private func LockButtonView() -> some View {
         VStack {
-            Toggle(isOn: $isTopsLock, label: {
-                HStack {
-                    Text("Tops")
-                        .fontWeight(.bold)
-                    Spacer()
-                    Image(systemName: self.isTopsLock ? "lock" : "lock.open")
-                }
-            })
-            Toggle(isOn: $isBottomsLock, label: {
-                HStack {
-                    Text("Bottoms")
-                        .fontWeight(.bold)
-                    Spacer()
-                    Image(systemName: self.isBottomsLock ? "lock" : "lock.open")
-                }
-            })
-            Toggle(isOn: $isShoesLock, label: {
-                HStack {
-                    Text("Shoes")
-                        .fontWeight(.bold)
-                    Spacer()
-                    Image(systemName: self.isShoesLock ? "lock" : "lock.open")
-                }
-            })
+            lockToggleButton(type: .tops, isLocked: $isTopsLock)
+            lockToggleButton(type: .bottoms, isLocked: $isBottomsLock)
+            lockToggleButton(type: .shoes, isLocked: $isShoesLock)
+        }
+    }
+    
+    @ViewBuilder
+    private func lockToggleButton(type: ItemType, isLocked: Binding<Bool>) -> some View {
+        Toggle(isOn: isLocked) {
+            HStack {
+                Text(type.rawValue)
+                    .fontWeight(.bold)
+                Spacer()
+                Image(systemName: isLocked.wrappedValue ? "lock" : "lock.open")
+            }
+        }
+        .onChange(of: isLocked.wrappedValue) { _, newValue in
+            print("\(type.rawValue) lock state changed to \(newValue)")
+            switch type {
+            case .tops:
+                shuffleData.topsLock = newValue
+            case .bottoms:
+                shuffleData.bottomsLock = newValue
+            case .shoes:
+                shuffleData.shoesLock = newValue
+            default:
+                return
+            }
         }
     }
     
@@ -91,44 +91,41 @@ struct ShuffleControlView: View {
     @ViewBuilder
     private func SeasonsSettingView() -> some View {
         VStack {
-//            Text("Season")
-//                .font(.title)
-//                .fontWeight(.bold)
             VStack {
-                Button {
-                    self.isSelectedSpring.toggle()
-                } label: {
-                    if self.isSelectedSpring {Image(systemName: "checkmark")}
-                    Spacer()
-                    Text("Spring")
-                }
-                .foregroundColor(Color.primary)
-                Button {
-                    self.isSelectedSummer.toggle()
-                } label: {
-                    if self.isSelectedSummer {Image(systemName: "checkmark")}
-                    Spacer()
-                    Text("Summer")
-                }
-                .foregroundColor(Color.primary)
-                Button {
-                    self.isSelectedAutumn.toggle()
-                } label: {
-                    if self.isSelectedAutumn {Image(systemName: "checkmark")}
-                    Spacer()
-                    Text("Autumn")
-                }
-                .foregroundColor(Color.primary)
-                Button {
-                    self.isSelectedWinter.toggle()
-                } label: {
-                    if self.isSelectedWinter {Image(systemName: "checkmark")}
-                    Spacer()
-                    Text("Winter")
-                }
-                .foregroundColor(Color.primary)
+                seasonButton(season: .spring, isOn: $isSelectedSpring)
+                seasonButton(season: .summer, isOn: $isSelectedSummer)
+                seasonButton(season: .autumn, isOn: $isSelectedAutumn)
+                seasonButton(season: .winter, isOn: $isSelectedWinter)
             }
         }
+    }
+    
+    @ViewBuilder
+    private func seasonButton(season: Season, isOn: Binding<Bool>) -> some View {
+        Button {
+            isOn.wrappedValue.toggle()
+            let seasonSelected = isOn.wrappedValue
+            switch season {
+            case .spring:
+                shuffleData.spring = seasonSelected
+            case .summer:
+                shuffleData.summer = seasonSelected
+            case .autumn:
+                shuffleData.autumn = seasonSelected
+            case .winter:
+                shuffleData.winter = seasonSelected
+            }
+        } label: {
+            HStack {
+                if isOn.wrappedValue {
+                    Image(systemName: "checkmark")
+                }
+                Spacer()
+                Text(season.rawValue)
+            }
+            .padding(.vertical, 2)
+        }
+        .foregroundColor(Color.primary)
     }
     
     //
@@ -138,7 +135,18 @@ struct ShuffleControlView: View {
     @ViewBuilder
     private func ShuffleButton() -> some View {
         Button {
-            self.doShuffle()
+            shuffleData.doShuffle()
+            print("do shuffle")
+            if let selectedTops = shuffleData.selectedTops {
+                selectedStyle?.setItem(item: selectedTops)
+            }
+            if let selectedBottoms = shuffleData.selectedBottoms {
+                selectedStyle?.setItem(item: selectedBottoms)
+            }
+            if let selectedShoes = shuffleData.selectedShoes {
+                selectedStyle?.setItem(item: selectedShoes)
+            }
+            
         } label: {
             Image(systemName: "shuffle")
                 .padding([.leading, .trailing], 10)
@@ -150,12 +158,8 @@ struct ShuffleControlView: View {
         .font(.title3)
     }
     
-    private func doShuffle() {
-        print("do Shuffle!")
-    }
-    
 }
 
 #Preview {
-    ShuffleControlView()
+    ShuffleControlView(selectedStyle: .constant(nil), shuffleData: .constant(ShuffleData()))
 }

@@ -14,6 +14,7 @@ class SharedItemType: ObservableObject {
 }
 
 struct StylingDetailView: View {
+    @Environment(\.modelContext) private var context
     @Query var items: [Item]
     
     @Binding var selectedStyle: Style?
@@ -32,7 +33,7 @@ struct StylingDetailView: View {
                         Color(.systemGray6)   // 背景色
                         VStack {
                             HStack {
-                                ShuffleControlView()
+                                ShuffleControlView(selectedStyle: $selectedStyle, shuffleData: $shuffleData)
                                 ItemControlView()
                             }
                             .frame(height: geometry.size.height * 0.5)
@@ -55,13 +56,19 @@ struct StylingDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
         } // VStack
         .ignoresSafeArea(.keyboard, edges: .all)
-        .onChange(of: items, {
+        .onChange(of: items) {
             print("items change!")
             shuffleData.setItems(items)
-        })
+            shuffleData.setFilterdItems()
+        }
         .onAppear() {
             shuffleData.setItems(items)
+            shuffleData.setFilterdItems()
         }
+    }
+    
+    func updateShuffleData() {
+        shuffleData.setItems(items)
     }
     
 }
