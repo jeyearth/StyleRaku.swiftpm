@@ -53,7 +53,8 @@ struct StylingDetailView: View {
             }
             .navigationTitle(selectedStyle?.name ?? "Styling Details")
             .navigationBarTitleDisplayMode(.inline)
-        }
+        } // VStack
+        .ignoresSafeArea(.keyboard, edges: .all)
         .onChange(of: items, {
             print("items change!")
             shuffleData.setItems(items)

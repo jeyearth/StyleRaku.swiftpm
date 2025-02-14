@@ -45,7 +45,7 @@ struct StyleEditView: View {
                                 .frame(height: 150)
                             
                             if inputDescriptionText.isEmpty {
-                                Text("ここに入力してください。")
+                                Text("Description")
                                     .foregroundColor(.gray)
                                     .padding(.top, 8)
                                     .padding(.leading, 4)
