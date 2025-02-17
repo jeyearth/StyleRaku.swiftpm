@@ -23,6 +23,13 @@ struct ItemControlView: View {
                     }
                     
                     HStack {
+                        Button  {
+                            print("do align.horizontal.center")
+                        } label: {
+                            Image(systemName: "square.3.layers.3d")
+                                .font(.title2)
+                                .foregroundColor(Color.secondary)
+                        }
                         Spacer()
                         Button  {
                             print("do align.horizontal.center")
