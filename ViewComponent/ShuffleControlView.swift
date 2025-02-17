@@ -12,6 +12,7 @@ struct ShuffleControlView: View {
     
     @Binding var selectedStyle: Style?
     @Binding var shuffleData: ShuffleData
+    @Binding var selectedItem: Item?
     
     @State private var isTopsLock: Bool = false
     @State private var isBottomsLock: Bool = false
@@ -125,18 +126,7 @@ struct ShuffleControlView: View {
     @ViewBuilder
     private func ShuffleButton() -> some View {
         Button {
-            shuffleData.doShuffle()
-            print("do shuffle")
-            if let selectedTops = shuffleData.selectedTops {
-                selectedStyle?.setItem(item: selectedTops)
-            }
-            if let selectedBottoms = shuffleData.selectedBottoms {
-                selectedStyle?.setItem(item: selectedBottoms)
-            }
-            if let selectedShoes = shuffleData.selectedShoes {
-                selectedStyle?.setItem(item: selectedShoes)
-            }
-            
+            self.executeShuffle()
         } label: {
             Image(systemName: "shuffle")
                 .padding([.leading, .trailing], 10)
@@ -148,8 +138,27 @@ struct ShuffleControlView: View {
         .font(.title3)
     }
     
+    private func executeShuffle() {
+        print("do shuffle")
+        shuffleData.doShuffle()
+        if let selectedTops = shuffleData.selectedTops {
+            selectedStyle?.setItem(item: selectedTops)
+        }
+        if let selectedBottoms = shuffleData.selectedBottoms {
+            selectedStyle?.setItem(item: selectedBottoms)
+        }
+        if let selectedShoes = shuffleData.selectedShoes {
+            selectedStyle?.setItem(item: selectedShoes)
+        }
+        
+        guard let type = selectedItem?.type else { return }
+        guard let item = selectedStyle?.getItem(type) else { return }
+        
+        selectedItem = item
+    }
+    
 }
 
 #Preview {
-    ShuffleControlView(selectedStyle: .constant(nil), shuffleData: .constant(ShuffleData()))
+    ShuffleControlView(selectedStyle: .constant(nil), shuffleData: .constant(ShuffleData()), selectedItem: .constant(nil))
 }

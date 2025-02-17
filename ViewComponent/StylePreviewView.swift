@@ -33,13 +33,11 @@ struct StylePreviewView: View {
             .resizable()
             .scaledToFit()
             .frame(width: size)
+            .padding()
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                .stroke((self.selectedItemType == type ? Color.accentColor : Color.clear), lineWidth: 3)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(self.draggingItem?.type == type ? Color.gray.opacity(0.5) : Color.clear)
+                    .stroke((self.selectedItemType == type ? Color.accentColor : Color.clear), lineWidth: 3)
+                    .fill(self.draggingItem?.type == type && self.isDropping ? Color.gray.opacity(0.4) : Color.clear)
             )
 //            .position(position)
             .offset(x: position.x, y: position.y)
@@ -107,10 +105,10 @@ struct StylePreviewView: View {
             }
         } // VStack
         .padding()
-        .overlay(  // 枠線を動的に表示
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(isDropping ? Color.blue : Color.clear, lineWidth: 4)
-        )
+//        .overlay(  // 枠線を動的に表示
+//            RoundedRectangle(cornerRadius: 10)
+//                .stroke(isDropping ? Color.blue : Color.clear, lineWidth: 4)
+//        )
         .onDrop(of: ["public.text"], isTargeted: Binding(
             get: { isDropping },
             set: { isDropping = $0 }
@@ -119,7 +117,7 @@ struct StylePreviewView: View {
                 if let itemID = itemID as? String, let uuid = UUID(uuidString: itemID) {
                     DispatchQueue.main.async {
                         if let droppedItem = findItem(by: uuid) {
-                            addItem = droppedItem
+                            selectedStyle?.setItem(item: droppedItem)
                         }
                     }
                 }

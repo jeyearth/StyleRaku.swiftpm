@@ -36,7 +36,7 @@ struct StylingDetailView: View {
                         Color(.systemGray6)   // 背景色
                         VStack {
                             HStack {
-                                ShuffleControlView(selectedStyle: $selectedStyle, shuffleData: $viewModel.shuffleData)
+                                ShuffleControlView(selectedStyle: $selectedStyle, shuffleData: $viewModel.shuffleData, selectedItem: $selectedItem)
                                 ItemControlView(selectedStyle: $selectedStyle, selectedItem: $selectedItem)
                             }
                             .frame(height: geometry.size.height * 0.5)
