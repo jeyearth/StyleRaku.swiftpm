@@ -78,11 +78,11 @@ struct ItemContainerView: View {
     
     private func deleteItem() {
         context.delete(item)
-        do {
-            try context.save() // 削除を保存
-        } catch {
-            print("Error saving context: \(error.localizedDescription)")
-        }
+//        do {
+//            try context.save() // 削除を保存
+//        } catch {
+//            print("Error saving context: \(error.localizedDescription)")
+//        }
     }
     
 }

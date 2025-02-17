@@ -9,17 +9,27 @@
 import SwiftUI
 
 struct ItemControlView: View {
-    
     let moveButtonSize: CGFloat = 40
     
-    @State var count:Int = 0
+    @Binding var selectedStyle: Style?
+    @Binding var selectedItem: Item?
+    @State var count: Float
+    
+    init(selectedStyle: Binding<Style?>, selectedItem: Binding<Item?>) {
+        self._selectedStyle = selectedStyle
+        self._selectedItem = selectedItem
+        self._count = State(initialValue: selectedItem.wrappedValue?.size ?? 100)
+    }
     
     var body: some View {
         VStack {
             VStack {
                 VStack {
-                    Stepper(value: $count, in: 0...10, step: 1) {
-                        Text("Size: \(count)")
+                    Stepper(value: $count, in: 50...400, step: 1) {
+                        Text("Size: \(Int(count))")
+                    }
+                    .onChange(of: count) { _, newValue in
+                        selectedItem?.size = newValue
                     }
                     
                     HStack {
@@ -82,9 +92,12 @@ struct ItemControlView: View {
         .padding(.top, 10)
         .padding(.trailing, 10)
         .padding(.bottom, 5)
+        .onChange(of: selectedItem) {
+            self.count = selectedItem?.size ?? 150
+        }
     }
 }
 
-#Preview {
-    ItemControlView()
-}
+//#Preview {
+//    ItemControlView(selectedStyle: .constant(Style()), selectedItemType: .constant(nil))
+//}

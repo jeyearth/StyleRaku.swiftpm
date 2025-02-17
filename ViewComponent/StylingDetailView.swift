@@ -23,7 +23,8 @@ struct StylingDetailView: View {
     @State var addItem: Item?
     
     @State var draggingItem: Item? = nil
-//    @State var shuffleData = ShuffleData()
+    @State var selectedItemType: ItemType?
+    @State var selectedItem: Item?
     
     var body: some View {
         VStack(spacing : 0) {
@@ -36,7 +37,7 @@ struct StylingDetailView: View {
                         VStack {
                             HStack {
                                 ShuffleControlView(selectedStyle: $selectedStyle, shuffleData: $viewModel.shuffleData)
-                                ItemControlView()
+                                ItemControlView(selectedStyle: $selectedStyle, selectedItem: $selectedItem)
                             }
                             .frame(height: geometry.size.height * 0.5)
                             ItemsView(
@@ -50,7 +51,13 @@ struct StylingDetailView: View {
                     .frame(width: geometry.size.width * 0.65)
                     
                     // 右側: プレビューView（4割幅）
-                    StylePreviewView(selectedStyle: $selectedStyle, addItem: $addItem, draggingItem: $draggingItem)
+                    StylePreviewView(
+                        selectedStyle: $selectedStyle,
+                        addItem: $addItem,
+                        draggingItem: $draggingItem,
+                        selectedItemType: $selectedItemType,
+                        selectedItem: $selectedItem
+                    )
                         .frame(width: geometry.size.width * 0.35)
                 }
             }

@@ -129,6 +129,19 @@ final class Style {
         self.descriptionText = descriptionText
     }
     
+    func getItem(_ type: ItemType) -> Item? {
+        switch type {
+        case .tops:
+            return self.tops
+        case .bottoms:
+            return self.bottoms
+        case .shoes:
+            return self.shoes
+        default :
+            return nil
+        }
+    }
+    
     // MARK: - Methods
     func updatePosition(for category: ItemType, to position: CGPoint) {
         switch category {

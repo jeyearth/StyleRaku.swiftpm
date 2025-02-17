@@ -141,6 +141,8 @@ struct ItemEditView: View {
         selectedItem.autumn = self.autumn
         selectedItem.winter = self.winter
         
+        selectedItem.size = ItemType.getDefaultSize(selectedItem.type)
+        
         if favImage == nil {
             favImage = selectedUIImages.first
         }
@@ -192,7 +194,7 @@ struct ItemEditView: View {
             selectedItem.setMainImage(fav.name)
         }
         
-        try? context.save()
+//        try? context.save()
         viewModel.updateShuffleData(items)
     }
     

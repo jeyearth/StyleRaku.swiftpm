@@ -14,28 +14,16 @@ struct StylePreviewView: View {
     @Binding var selectedStyle: Style?
     @Binding var addItem: Item?
     @Binding var draggingItem: Item?
-
-    @State var selectedItemType: ItemType?
+    @Binding var selectedItemType: ItemType?
+    @Binding var selectedItem: Item?
     @State private var isDropping: Bool = false  // ドロップエリア判定
     
-    init(selectedStyle: Binding<Style?>, addItem: Binding<Item?>, draggingItem: Binding<Item?>) {
+    init(selectedStyle: Binding<Style?>, addItem: Binding<Item?>, draggingItem: Binding<Item?>, selectedItemType: Binding<ItemType?>, selectedItem: Binding<Item?>) {
         self._selectedStyle = selectedStyle
         self._addItem = addItem
         self._draggingItem = draggingItem
-
-        // addItem が nil の場合の処理を追加
-        if let item = addItem.wrappedValue {
-            selectedStyle.wrappedValue?.setItem(item: item)
-        }
-    }
-    
-    // addItemの変更を監視して処理を行う
-    private func handleAddItem() {
-        if let item = addItem {
-            selectedStyle?.setItem(item: item)
-            // アイテムをセットした後、addItemをnilに戻す
-            self.addItem = nil
-        }
+        self._selectedItemType = selectedItemType
+        self._selectedItem = selectedItem
     }
     
     // 画像表示用のビューコンポーネント
@@ -45,21 +33,32 @@ struct StylePreviewView: View {
             .resizable()
             .scaledToFit()
             .frame(width: size)
-            .overlay(RoundedRectangle(cornerRadius: 10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
                 .stroke((self.selectedItemType == type ? Color.accentColor : Color.clear), lineWidth: 3)
-                
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(self.draggingItem?.type == type ? Color.gray.opacity(0.5) : Color.clear)
             )
         //            .position(position)
             .offset(x: position.x - (size / image.size.width) * image.size.width / 2, y: position.y - (size / image.size.width) * image.size.height / 2)
-            .gesture(
-                DragGesture()
-                    .onChanged { gesture in
-                        if let unwrap = selectedStyle {
-                            unwrap.updatePosition(for: type, to: gesture.location)
-                        }
-                        self.selectedItemType = type
-                    }
-            )
+            .onTapGesture {
+                self.selectedItemType = type
+                self.selectedItem = selectedStyle?.getItem(type)
+            }
+//            .gesture(
+//                DragGesture()
+//                    .onChanged { gesture in
+//                        if let unwrap = selectedStyle {
+//                            unwrap.updatePosition(for: type, to: gesture.location)
+//                        }
+//                        self.selectedItemType = type
+//                    }
+//                    .onEnded {_ in 
+//                        self.selectedItemType = nil
+//                    }
+//            )
         
     }
     
@@ -77,33 +76,21 @@ struct StylePreviewView: View {
                     if let shoes = selectedStyle?.shoes,
                        let shoesImage = shoes.getSubjectImage(),
                        let shoesPosition = selectedStyle?.shoesPosition {
-                        itemImageView(size: 100, type: shoes.type, image: shoesImage, position: shoesPosition)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(draggingItem?.type == .shoes ? Color.blue : Color.clear, lineWidth: 3)
-                            )
+                        itemImageView(size: CGFloat(shoes.size), type: shoes.type, image: shoesImage, position: shoesPosition)
                     }
                     
                     // Bottoms
                     if let bottoms = selectedStyle?.bottoms,
                        let bottomsImage = bottoms.getSubjectImage(),
                        let bottomsPosition = selectedStyle?.bottomsPosition {
-                        itemImageView(size: 150, type: bottoms.type, image: bottomsImage, position: bottomsPosition)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(draggingItem?.type == .bottoms ? Color.blue : Color.clear, lineWidth: 3)
-                            )
+                        itemImageView(size: CGFloat(bottoms.size), type: bottoms.type, image: bottomsImage, position: bottomsPosition)
                     }
                     
                     // Tops
                     if let tops = selectedStyle?.tops,
                        let topsImage = tops.getSubjectImage(),
                        let topsPosition = selectedStyle?.topsPosition {
-                        itemImageView(size: 200, type: tops.type, image: topsImage, position: topsPosition)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(draggingItem?.type == .tops ? Color.blue : Color.clear, lineWidth: 3)
-                            )
+                        itemImageView(size: CGFloat(tops.size), type: tops.type, image: topsImage, position: topsPosition)
                     }
                 }
             }
@@ -137,10 +124,8 @@ struct StylePreviewView: View {
             }
             isDropping = false
             draggingItem = nil
+            selectedItemType = nil
             return true
-        }
-        .onChange(of: addItem) { _, _ in
-            handleAddItem()
         }
     } // body
     

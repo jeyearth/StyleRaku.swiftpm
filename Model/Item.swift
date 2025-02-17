@@ -8,13 +8,6 @@
 import SwiftUI
 import SwiftData
 
-//enum ItemType: Codable {
-//    case tops
-//    case bottoms
-//    case shoes
-//    case others
-//}
-
 enum ItemType: String, CaseIterable, Codable, Identifiable {
     case tops = "Tops"
     case bottoms = "Bottoms"
@@ -22,6 +15,19 @@ enum ItemType: String, CaseIterable, Codable, Identifiable {
     case others = "Others"
     
     var id: String { rawValue }
+    
+    static func getDefaultSize(_ type: ItemType) -> Float {
+        switch type {
+        case .tops:
+            return 220
+        case .bottoms:
+            return 150
+        case .shoes:
+            return 100
+        default:
+            return 75
+        }
+    }
 }
 
 enum Season: String {
@@ -45,6 +51,7 @@ final class Item {
     var mainImage: String?  // mainImage のファイル名（ファイルシステムに保存）
     var subjectImage: String?  // subjectImage のファイル名（加工された画像の保存先）
     @Attribute var images: [String]  // 複数画像のファイル名リスト（ファイルシステムに保存）
+    var size: Float
     
     init() {
         self.id = UUID()
@@ -52,6 +59,7 @@ final class Item {
         self.descriptionText = ""
         self.type = ItemType.others
         self.images = []
+        self.size = ItemType.getDefaultSize(ItemType.others)
     }
     
     init(descriptionText: String, type: ItemType) {
@@ -60,14 +68,7 @@ final class Item {
         self.descriptionText = descriptionText
         self.type = type
         self.images = []
-    }
-    
-    init(type: ItemType, description: String) {
-        self.id = UUID()
-        self.createdAt = Date()
-        self.type = type
-        self.descriptionText = description
-        self.images = []
+        self.size = ItemType.getDefaultSize(type)
     }
     
     //
