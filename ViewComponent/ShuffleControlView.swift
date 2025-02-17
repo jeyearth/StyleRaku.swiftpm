@@ -17,11 +17,6 @@ struct ShuffleControlView: View {
     @State private var isBottomsLock: Bool = false
     @State private var isShoesLock: Bool = false
     
-    @State private var isSelectedSpring: Bool = true
-    @State private var isSelectedSummer: Bool = true
-    @State private var isSelectedAutumn: Bool = true
-    @State private var isSelectedWinter: Bool = true
-    
     var body: some View {
         VStack {
             VStack {
@@ -92,32 +87,27 @@ struct ShuffleControlView: View {
     private func SeasonsSettingView() -> some View {
         VStack {
             VStack {
-                seasonButton(season: .spring, isOn: $isSelectedSpring)
-                seasonButton(season: .summer, isOn: $isSelectedSummer)
-                seasonButton(season: .autumn, isOn: $isSelectedAutumn)
-                seasonButton(season: .winter, isOn: $isSelectedWinter)
+//                seasonButton(season: .spring, isOn: $isSelectedSpring)
+//                seasonButton(season: .summer, isOn: $isSelectedSummer)
+//                seasonButton(season: .autumn, isOn: $isSelectedAutumn)
+//                seasonButton(season: .winter, isOn: $isSelectedWinter)
+                seasonButton(season: .spring)
+                seasonButton(season: .summer)
+                seasonButton(season: .autumn)
+                seasonButton(season: .winter)
             }
         }
     }
     
     @ViewBuilder
-    private func seasonButton(season: Season, isOn: Binding<Bool>) -> some View {
+//    private func seasonButton(season: Season, isOn: Binding<Bool>) -> some View {
+    private func seasonButton(season: Season) -> some View {
         Button {
-            isOn.wrappedValue.toggle()
-            let seasonSelected = isOn.wrappedValue
-            switch season {
-            case .spring:
-                shuffleData.spring = seasonSelected
-            case .summer:
-                shuffleData.summer = seasonSelected
-            case .autumn:
-                shuffleData.autumn = seasonSelected
-            case .winter:
-                shuffleData.winter = seasonSelected
-            }
+//            isOn.wrappedValue.toggle()
+            shuffleData.toggleSeason(season)
         } label: {
             HStack {
-                if isOn.wrappedValue {
+                if shuffleData.getSeason(season) {
                     Image(systemName: "checkmark")
                 }
                 Spacer()

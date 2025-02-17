@@ -16,10 +16,13 @@ struct MyApp: App {
         }
     }()
     
+    @StateObject private var viewModel = StylingDetailViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .modelContainer(sharedModelContainer)
+                .environmentObject(viewModel)
         }
     }
 }

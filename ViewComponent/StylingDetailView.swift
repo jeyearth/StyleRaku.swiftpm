@@ -17,11 +17,13 @@ struct StylingDetailView: View {
     @Environment(\.modelContext) private var context
     @Query var items: [Item]
     
+    @EnvironmentObject var viewModel: StylingDetailViewModel
+    
     @Binding var selectedStyle: Style?
     @State var addItem: Item?
     
     @State var draggingItem: Item? = nil
-    @State var shuffleData = ShuffleData()
+//    @State var shuffleData = ShuffleData()
     
     var body: some View {
         VStack(spacing : 0) {
@@ -33,7 +35,7 @@ struct StylingDetailView: View {
                         Color(.systemGray6)   // 背景色
                         VStack {
                             HStack {
-                                ShuffleControlView(selectedStyle: $selectedStyle, shuffleData: $shuffleData)
+                                ShuffleControlView(selectedStyle: $selectedStyle, shuffleData: $viewModel.shuffleData)
                                 ItemControlView()
                             }
                             .frame(height: geometry.size.height * 0.5)
@@ -58,17 +60,16 @@ struct StylingDetailView: View {
         .ignoresSafeArea(.keyboard, edges: .all)
         .onChange(of: items) {
             print("items change!")
-            shuffleData.setItems(items)
-            shuffleData.setFilterdItems()
+            self.updateShuffleData()
         }
-        .onAppear() {
-            shuffleData.setItems(items)
-            shuffleData.setFilterdItems()
+        .onAppear {
+            self.updateShuffleData()
         }
     }
     
     func updateShuffleData() {
-        shuffleData.setItems(items)
+        viewModel.items = items
+        viewModel.setFilterdItems()
     }
     
 }

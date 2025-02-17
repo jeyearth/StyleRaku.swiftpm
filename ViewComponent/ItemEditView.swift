@@ -1,4 +1,5 @@
 import SwiftUI
+import _SwiftData_SwiftUI
 import PhotosUI
 
 class EditImage: Identifiable, Equatable {
@@ -18,9 +19,12 @@ class EditImage: Identifiable, Equatable {
 
 struct ItemEditView: View {
     @Environment(\.modelContext) private var context
+    @Query var items: [Item]
     @Environment(\.dismiss) private var dismiss
     
     let newItemToggle: Bool
+    
+    @EnvironmentObject private var viewModel: StylingDetailViewModel
     
     @State private var inputItemType: ItemType = .others
     @State private var inputDescriptionText: String = ""
@@ -189,6 +193,7 @@ struct ItemEditView: View {
         }
         
         try? context.save()
+        viewModel.updateShuffleData(items)
     }
     
     private func resetState() {

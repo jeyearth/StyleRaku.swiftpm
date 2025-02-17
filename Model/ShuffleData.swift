@@ -35,6 +35,19 @@ final class ShuffleData {
         self.winter = true
     }
     
+    func getSeason(_ season: Season) -> Bool {
+        switch season {
+        case .spring:
+            return self.spring
+        case .summer:
+            return self.summer
+        case .autumn:
+            return self.autumn
+        case .winter:
+            return self.winter
+        }
+    }
+    
     func toggleSeason(_ season: Season) {
         switch season {
         case .spring:
@@ -46,6 +59,7 @@ final class ShuffleData {
         case .winter:
             self.winter.toggle()
         }
+        self.setFilterdItems()
     }
     
     func updataData(_ items: [Item]) {
