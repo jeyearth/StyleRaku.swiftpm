@@ -73,14 +73,14 @@ struct StylePreviewView: View {
             Spacer()
             VStack {
                 ZStack {
-                    // Tops
-                    if let tops = selectedStyle?.tops,
-                       let topsImage = tops.getSubjectImage(),
-                       let topsPosition = selectedStyle?.topsPosition {
-                        itemImageView(size: 200, type: tops.type, image: topsImage, position: topsPosition)
+                    // Shoes
+                    if let shoes = selectedStyle?.shoes,
+                       let shoesImage = shoes.getSubjectImage(),
+                       let shoesPosition = selectedStyle?.shoesPosition {
+                        itemImageView(size: 100, type: shoes.type, image: shoesImage, position: shoesPosition)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(draggingItem?.type == .tops ? Color.blue : Color.clear, lineWidth: 3)
+                                    .stroke(draggingItem?.type == .shoes ? Color.blue : Color.clear, lineWidth: 3)
                             )
                     }
                     
@@ -95,14 +95,14 @@ struct StylePreviewView: View {
                             )
                     }
                     
-                    // Shoes
-                    if let shoes = selectedStyle?.shoes,
-                       let shoesImage = shoes.getSubjectImage(),
-                       let shoesPosition = selectedStyle?.shoesPosition {
-                        itemImageView(size: 100, type: shoes.type, image: shoesImage, position: shoesPosition)
+                    // Tops
+                    if let tops = selectedStyle?.tops,
+                       let topsImage = tops.getSubjectImage(),
+                       let topsPosition = selectedStyle?.topsPosition {
+                        itemImageView(size: 200, type: tops.type, image: topsImage, position: topsPosition)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(draggingItem?.type == .shoes ? Color.blue : Color.clear, lineWidth: 3)
+                                    .stroke(draggingItem?.type == .tops ? Color.blue : Color.clear, lineWidth: 3)
                             )
                     }
                 }
