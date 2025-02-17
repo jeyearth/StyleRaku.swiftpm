@@ -43,6 +43,10 @@ struct ItemControlView: View {
                         Spacer()
                         Button  {
                             print("do align.horizontal.center")
+                            
+                            selectedStyle?.topsPosition.x = 0
+                            selectedStyle?.bottomsPosition.x = 0
+                            selectedStyle?.shoesPosition.x = 0
                         } label: {
                             Image(systemName: "align.horizontal.center")
                                 .font(.title2)
