@@ -9,6 +9,9 @@
 import SwiftUI
 
 struct ItemControlView: View {
+    private let X: Int = 0
+    private let Y: Int = 1
+    
     let moveButtonSize: CGFloat = 40
     
     @Binding var selectedStyle: Style?
@@ -55,14 +58,20 @@ struct ItemControlView: View {
                     }
                     
                     VStack {
-                        Button(action: { print("北ボタンが押されました") }) {
+                        Button  {
+                            print("北ボタンが押されました")
+                            self.updatePosition(-1, for: Y, selectedItem: selectedItem)
+                        } label: {
                             Image(systemName: "arrow.up.circle.fill")
                                 .resizable()
                                 .frame(width: moveButtonSize, height: moveButtonSize)
                         }
                         
                         HStack {
-                            Button(action: { print("西ボタンが押されました") }) {
+                            Button  {
+                                print("西ボタンが押されました")
+                                self.updatePosition(-1, for: X, selectedItem: selectedItem)
+                            } label: {
                                 Image(systemName: "arrow.left.circle.fill")
                                     .resizable()
                                     .frame(width: moveButtonSize, height: moveButtonSize)
@@ -70,14 +79,20 @@ struct ItemControlView: View {
                             
                             Spacer().frame(width: moveButtonSize + 10) // 中央の空間
                             
-                            Button(action: { print("東ボタンが押されました") }) {
+                            Button  {
+                                print("東ボタンが押されました")
+                                self.updatePosition(1, for: X, selectedItem: selectedItem)
+                            } label: {
                                 Image(systemName: "arrow.right.circle.fill")
                                     .resizable()
                                     .frame(width: moveButtonSize, height: moveButtonSize)
                             }
                         }
                         
-                        Button(action: { print("南ボタンが押されました") }) {
+                        Button  {
+                            print("南ボタンが押されました")
+                            self.updatePosition(1, for: Y, selectedItem: selectedItem)
+                        } label: {
                             Image(systemName: "arrow.down.circle.fill")
                                 .resizable()
                                 .frame(width: moveButtonSize, height: moveButtonSize)
@@ -100,6 +115,32 @@ struct ItemControlView: View {
             self.count = selectedItem?.size ?? 150
         }
     }
+    
+    func updatePosition(_ addNum: CGFloat, for axis: Int, selectedItem: Item?) {
+        guard let selectedItem = selectedItem else { return }
+        if axis == self.X {
+            // X軸
+            updatePositionX(addNum, type: selectedItem.type)
+        } else if axis == self.Y {
+            // Y軸
+            updatePositionY(addNum, type: selectedItem.type)
+        }
+    }
+    
+    func updatePositionX(_ addNum: CGFloat, type: ItemType) {
+        guard let selectedStyle = selectedStyle else { return }
+        var position = selectedStyle.getPosition(for: type)
+        position.x += addNum
+        selectedStyle.updatePosition(for: type, to: position)
+    }
+    
+    func updatePositionY(_ addNum: CGFloat, type: ItemType) {
+        guard let selectedStyle = selectedStyle else { return }
+        var position = selectedStyle.getPosition(for: type)
+        position.y += addNum
+        selectedStyle.updatePosition(for: type, to: position)
+    }
+    
 }
 
 //#Preview {

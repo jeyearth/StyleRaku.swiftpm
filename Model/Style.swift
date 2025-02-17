@@ -158,6 +158,19 @@ final class Style {
         }
     }
     
+    func getPosition(for category: ItemType) -> CGPoint {
+        switch category {
+        case .tops:
+            return self.topsPosition
+        case .bottoms:
+            return self.bottomsPosition
+        case .shoes:
+            return self.shoesPosition
+        case .others:
+            return .zero
+        }
+    }
+    
     func setItem(item: Item) {
         switch item.type {
         case.tops:
