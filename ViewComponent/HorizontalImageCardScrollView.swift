@@ -18,6 +18,7 @@ struct HorizontalImageCardScrollView: View {
     @State var selectedItem: Item?
     
     @State var showingEditSheet: Bool = false
+    @State private var ascendingOrder: Bool = true
     
     let isShowingSelectedItemView: Bool
     let itemContainerHeight: CGFloat
@@ -61,15 +62,30 @@ struct HorizontalImageCardScrollView: View {
                     }
                     
                 }
-                
+                Spacer()
             }
-            Spacer()
+            
+            VStack {
+                HStack {
+                    Spacer()
+                    Button {
+                        self.ascendingOrder.toggle()
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                            .font(.title3)
+                            .padding(.trailing , 20)
+                            .padding(.top, 10)
+                    }
+                }
+                Spacer()
+            }
             
             let filteredItems = getFilteredItems()
-
+                
             ScrollView(.horizontal, showsIndicators: true) {
                 HStack(spacing: 15) {
-                    ForEach(filteredItems, id: \.self) { item in                        
+                    ForEach(self.ascendingOrder ? filteredItems.sorted(by: { $0.createdAt < $1.createdAt }) : filteredItems.sorted(by: { $0.createdAt > $1.createdAt }),
+                            id: \.self) { item in
                         let isSelected: Bool = (item.id == selectedItem?.id ? true : false)
                         ItemContainerView(
                             item: item,

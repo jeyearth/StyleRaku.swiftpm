@@ -44,7 +44,7 @@ struct StylingDetailView: View {
                                 addItem: $addItem,
                                 draggingItem: $draggingItem,
                                 isShowingSelectedItemView: false,
-                                itemContainerHeight: geometry.size.height * 0.33
+                                itemContainerHeight: geometry.size.height * 0.325
                             )
                         }
                     }
