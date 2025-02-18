@@ -64,45 +64,35 @@ struct StylePreviewView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Image(systemName: "face.smiling")
-                Spacer()
-                Image(systemName: "arkit")
-            }
-            Spacer()
-            VStack {
-                ZStack {
-                    // Shoes
-                    if let shoes = selectedStyle?.shoes,
-                       let shoesImage = shoes.getSubjectImage(),
-                       let shoesPosition = selectedStyle?.shoesPosition {
-                        itemImageView(size: CGFloat(shoes.size), type: shoes.type, image: shoesImage, position: shoesPosition)
+            ZStack {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedItemType = nil
+                        selectedItem = nil
                     }
-                    
-                    // Bottoms
-                    if let bottoms = selectedStyle?.bottoms,
-                       let bottomsImage = bottoms.getSubjectImage(),
-                       let bottomsPosition = selectedStyle?.bottomsPosition {
-                        itemImageView(size: CGFloat(bottoms.size), type: bottoms.type, image: bottomsImage, position: bottomsPosition)
-                    }
-                    
-                    // Tops
-                    if let tops = selectedStyle?.tops,
-                       let topsImage = tops.getSubjectImage(),
-                       let topsPosition = selectedStyle?.topsPosition {
-                        itemImageView(size: CGFloat(tops.size), type: tops.type, image: topsImage, position: topsPosition)
-                    }
+                
+                // Shoes
+                if let shoes = selectedStyle?.shoes,
+                   let shoesImage = shoes.getSubjectImage(),
+                   let shoesPosition = selectedStyle?.shoesPosition {
+                    itemImageView(size: CGFloat(shoes.size), type: shoes.type, image: shoesImage, position: shoesPosition)
                 }
-            }
-            
-            Spacer()
-            HStack {
-                Image(systemName: "arrow.uturn.left.circle")
-                Image(systemName: "arrow.uturn.right.circle")
-                Spacer()
-                Image(systemName: "person.and.background.dotted")
-                Image(systemName: "squareshape.controlhandles.on.squareshape.controlhandles")
-            }
+                
+                // Bottoms
+                if let bottoms = selectedStyle?.bottoms,
+                   let bottomsImage = bottoms.getSubjectImage(),
+                   let bottomsPosition = selectedStyle?.bottomsPosition {
+                    itemImageView(size: CGFloat(bottoms.size), type: bottoms.type, image: bottomsImage, position: bottomsPosition)
+                }
+                
+                // Tops
+                if let tops = selectedStyle?.tops,
+                   let topsImage = tops.getSubjectImage(),
+                   let topsPosition = selectedStyle?.topsPosition {
+                    itemImageView(size: CGFloat(tops.size), type: tops.type, image: topsImage, position: topsPosition)
+                }
+            } // ZStack
         } // VStack
         .padding()
 //        .overlay(  // 枠線を動的に表示
