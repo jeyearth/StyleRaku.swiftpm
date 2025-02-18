@@ -28,7 +28,7 @@ struct StylePreviewView: View {
     
     // 画像表示用のビューコンポーネント
     @ViewBuilder
-    private func itemImageView(size: CGFloat, type: ItemType, image: UIImage, position: CGPoint) -> some View {
+    private func itemImageView(size: CGFloat, type: ItemType, image: UIImage, position: CGPoint, maxSize: CGSize) -> some View {
         Image(uiImage: image)
             .resizable()
             .scaledToFit()
@@ -40,12 +40,17 @@ struct StylePreviewView: View {
                     .fill(self.draggingItem?.type == type && self.isDropping ? Color.gray.opacity(0.4) : Color.clear)
             )
 //            .position(position)
-            .offset(x: position.x, y: self.calcPositionY(position: position, type: type, size: size, image: image))
+            .offset(
+                x: self.adjustPosition(size: size, position: position.x, imageSize: image.size, maxSize: maxSize, axis: true),
+                y: self.adjustPosition(size: size,
+                                       position: self.calcPositionY(position: position, type: type, size: size, imageSize: image.size),
+                                       imageSize: image.size, maxSize: maxSize, axis: false)
+            )
 //            .offset(x: position.x - (size / image.size.width) * image.size.width / 2, y: position.y - (size / image.size.width) * image.size.height / 2)
             .onTapGesture {
                 self.selectedItemType = type
                 self.selectedItem = selectedStyle?.getItem(type)
-                print(position.y)
+                print(image.size)
             }
 //            .gesture(
 //                DragGesture()
@@ -62,12 +67,43 @@ struct StylePreviewView: View {
 //            )
     }
     
-    private func calcPositionY(position: CGPoint, type: ItemType, size: CGFloat, image: UIImage) -> CGFloat {
+    private func adjustPosition(size: CGFloat, position: CGFloat, imageSize: CGSize, maxSize: CGSize, axis: Bool) -> CGFloat {
+        var newPosition: CGFloat = position
+        
+        if axis {
+            // X軸
+            let halfSizeW = size / 2
+            
+            let minX = halfSizeW - maxSize.width / 2
+            let maxX = maxSize.width / 2 - halfSizeW
+            
+            if newPosition < minX {
+                newPosition = minX
+            } else if newPosition > maxX {
+                newPosition = maxX
+            }
+        } else {
+            // Y軸
+            let halfSizeH = (size / imageSize.width) * imageSize.height / 2
+            
+            let minY = halfSizeH - maxSize.height / 2
+            let maxY = maxSize.height / 2 - halfSizeH
+            
+            if newPosition < minY {
+                newPosition = minY
+            } else if newPosition > maxY {
+                newPosition = maxY
+            }
+        }
+        return newPosition
+    }
+    
+    private func calcPositionY(position: CGPoint, type: ItemType, size: CGFloat, imageSize: CGSize) -> CGFloat {
         switch type {
         case .tops:
-            return position.y - (size / image.size.width) * image.size.height / 2
+            return position.y - (size / imageSize.width) * imageSize.height / 2
         case .bottoms:
-            return position.y + (size / image.size.width) * image.size.height / 2
+            return position.y + (size / imageSize.width) * imageSize.height / 2
         case .shoes:
             return position.y
         default:
@@ -77,35 +113,55 @@ struct StylePreviewView: View {
     
     var body: some View {
         VStack {
-            ZStack {
-                Color.clear
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        selectedItemType = nil
-                        selectedItem = nil
+            GeometryReader { geometry in
+                ZStack {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedItemType = nil
+                            selectedItem = nil
+                        }
+                    
+                    // Shoes
+                    if let shoes = selectedStyle?.shoes,
+                       let shoesImage = shoes.getSubjectImage(),
+                       let shoesPosition = selectedStyle?.shoesPosition {
+                        itemImageView(
+                            size: CGFloat(shoes.size),
+                            type: shoes.type,
+                            image: shoesImage,
+                            position: shoesPosition,
+                            maxSize: geometry.size
+                        )
                     }
-                
-                // Shoes
-                if let shoes = selectedStyle?.shoes,
-                   let shoesImage = shoes.getSubjectImage(),
-                   let shoesPosition = selectedStyle?.shoesPosition {
-                    itemImageView(size: CGFloat(shoes.size), type: shoes.type, image: shoesImage, position: shoesPosition)
-                }
-                
-                // Bottoms
-                if let bottoms = selectedStyle?.bottoms,
-                   let bottomsImage = bottoms.getSubjectImage(),
-                   let bottomsPosition = selectedStyle?.bottomsPosition {
-                    itemImageView(size: CGFloat(bottoms.size), type: bottoms.type, image: bottomsImage, position: bottomsPosition)
-                }
-                
-                // Tops
-                if let tops = selectedStyle?.tops,
-                   let topsImage = tops.getSubjectImage(),
-                   let topsPosition = selectedStyle?.topsPosition {
-                    itemImageView(size: CGFloat(tops.size), type: tops.type, image: topsImage, position: topsPosition)
-                }
-            } // ZStack
+                    
+                    // Bottoms
+                    if let bottoms = selectedStyle?.bottoms,
+                       let bottomsImage = bottoms.getSubjectImage(),
+                       let bottomsPosition = selectedStyle?.bottomsPosition {
+                        itemImageView(
+                            size: CGFloat(bottoms.size),
+                            type: bottoms.type,
+                            image: bottomsImage,
+                            position: bottomsPosition,
+                            maxSize: geometry.size
+                        )
+                    }
+                    
+                    // Tops
+                    if let tops = selectedStyle?.tops,
+                       let topsImage = tops.getSubjectImage(),
+                       let topsPosition = selectedStyle?.topsPosition {
+                        itemImageView(
+                            size: CGFloat(tops.size),
+                            type: tops.type,
+                            image: topsImage,
+                            position: topsPosition,
+                            maxSize: geometry.size
+                        )
+                    }
+                } // ZStack
+            }
         } // VStack
         .padding()
 //        .overlay(  // 枠線を動的に表示
