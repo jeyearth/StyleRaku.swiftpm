@@ -33,31 +33,11 @@ struct ItemContainerView: View {
                         .resizable()
                         .scaledToFit()
 //                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 200, height: 150)
-                        .clipped()
+                        .frame(width: itemContainerHeight * 0.8 - 40, height: itemContainerHeight - 40)
                 } else {
                     Text("no subject image")
                 }
                 
-                HStack {
-                    Spacer()
-                    Menu {
-                        Button(action: {
-                            self.showingEditSheet.toggle()
-                        }) {
-                            Label("Edit", systemImage: "square.and.pencil")
-                        }
-                        Button(role: .destructive) {
-                            self.deleteItem()
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                    }  label: {
-                        Image(systemName: "ellipsis.circle")
-                            .foregroundColor(.primary)
-                            .padding()
-                    }
-                }
             }
             .padding()
             .frame(width: itemContainerHeight * 0.8, height: itemContainerHeight)
@@ -74,6 +54,18 @@ struct ItemContainerView: View {
                 selectedItem: $item
             )
         })
+        .contextMenu {
+            Button(action: {
+                self.showingEditSheet.toggle()
+            }) {
+                Label("Edit", systemImage: "square.and.pencil")
+            }
+            Button(role: .destructive) {
+                self.deleteItem()
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
     }
     
     private func deleteItem() {
