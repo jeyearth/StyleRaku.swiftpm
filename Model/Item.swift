@@ -21,7 +21,7 @@ enum ItemType: String, CaseIterable, Codable, Identifiable {
         case .tops:
             return 220
         case .bottoms:
-            return 150
+            return 140
         case .shoes:
             return 100
         default:

@@ -40,26 +40,39 @@ struct StylePreviewView: View {
                     .fill(self.draggingItem?.type == type && self.isDropping ? Color.gray.opacity(0.4) : Color.clear)
             )
 //            .position(position)
-            .offset(x: position.x, y: position.y)
+            .offset(x: position.x, y: self.calcPositionY(position: position, type: type, size: size, image: image))
 //            .offset(x: position.x - (size / image.size.width) * image.size.width / 2, y: position.y - (size / image.size.width) * image.size.height / 2)
             .onTapGesture {
                 self.selectedItemType = type
                 self.selectedItem = selectedStyle?.getItem(type)
+                print(position.y)
             }
-            .gesture(
-                DragGesture()
-                    .onChanged { gesture in
-                        if let unwrap = selectedStyle {
-                            unwrap.updatePosition(for: type, to: gesture.location)
-                        }
-                        self.selectedItemType = type
-                        print(gesture.location)
-                    }
-                    .onEnded {_ in 
-                        self.selectedItemType = nil
-                    }
-            )
-        
+//            .gesture(
+//                DragGesture()
+//                    .onChanged { gesture in
+//                        if let unwrap = selectedStyle {
+//                            unwrap.updatePosition(for: type, to: gesture.location)
+//                        }
+//                        self.selectedItemType = type
+//                        print(gesture.location)
+//                    }
+//                    .onEnded {_ in 
+//                        self.selectedItemType = nil
+//                    }
+//            )
+    }
+    
+    private func calcPositionY(position: CGPoint, type: ItemType, size: CGFloat, image: UIImage) -> CGFloat {
+        switch type {
+        case .tops:
+            return position.y - (size / image.size.width) * image.size.height / 2
+        case .bottoms:
+            return position.y + (size / image.size.width) * image.size.height / 2
+        case .shoes:
+            return position.y
+        default:
+            return 100
+        }
     }
     
     var body: some View {

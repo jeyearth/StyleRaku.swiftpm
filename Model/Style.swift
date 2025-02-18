@@ -72,6 +72,12 @@ final class ItemPosition {
     }
 }
 
+let defaultItemPosition = [
+    "0,-20", // TOPS
+    "0,-30", // BOTTOMS
+    "0,280" // SHOES
+]
+
 @Model
 final class Style {
     // MARK: - Properties
@@ -89,9 +95,9 @@ final class Style {
     
     // MARK: - Position Properties (Stored as Strings)
     var facePositionString: String = "50,50"
-    var topsPositionString: String = "100,-50"
-    var bottomsPositionString: String = "100,150"
-    var shoesPositionString: String = "100,300"
+    var topsPositionString: String = defaultItemPosition[0]
+    var bottomsPositionString: String = defaultItemPosition[1]
+    var shoesPositionString: String = defaultItemPosition[2]
     
     // MARK: - Computed Properties for CGPoint conversion
     var facePosition: CGPoint {

@@ -12,6 +12,8 @@ struct ItemControlView: View {
     private let X: Int = 0
     private let Y: Int = 1
     
+    private let nilItemSizeNum: Float = 10
+    
     let moveButtonSize: CGFloat = 40
     
     @Binding var selectedStyle: Style?
@@ -21,7 +23,7 @@ struct ItemControlView: View {
     init(selectedStyle: Binding<Style?>, selectedItem: Binding<Item?>) {
         self._selectedStyle = selectedStyle
         self._selectedItem = selectedItem
-        self._count = State(initialValue: selectedItem.wrappedValue?.size ?? 100)
+        self._count = State(initialValue: selectedItem.wrappedValue?.size ?? nilItemSizeNum)
     }
     
     var body: some View {
@@ -29,7 +31,11 @@ struct ItemControlView: View {
             VStack {
                 VStack {
                     Stepper(value: $count, in: 50...400, step: 1) {
-                        Text("Size: \(Int(count))")
+                        if count != nilItemSizeNum {
+                            Text("Size: \(Int(count))")
+                        } else {
+                            Text("Size: -")
+                        }
                     }
                     .onChange(of: count) { _, newValue in
                         selectedItem?.size = newValue
@@ -59,7 +65,6 @@ struct ItemControlView: View {
                     
                     VStack {
                         Button  {
-                            print("北ボタンが押されました")
                             self.updatePosition(-1, for: Y, selectedItem: selectedItem)
                         } label: {
                             Image(systemName: "arrow.up.circle.fill")
@@ -69,7 +74,6 @@ struct ItemControlView: View {
                         
                         HStack {
                             Button  {
-                                print("西ボタンが押されました")
                                 self.updatePosition(-1, for: X, selectedItem: selectedItem)
                             } label: {
                                 Image(systemName: "arrow.left.circle.fill")
@@ -80,7 +84,6 @@ struct ItemControlView: View {
                             Spacer().frame(width: moveButtonSize + 10) // 中央の空間
                             
                             Button  {
-                                print("東ボタンが押されました")
                                 self.updatePosition(1, for: X, selectedItem: selectedItem)
                             } label: {
                                 Image(systemName: "arrow.right.circle.fill")
@@ -90,7 +93,6 @@ struct ItemControlView: View {
                         }
                         
                         Button  {
-                            print("南ボタンが押されました")
                             self.updatePosition(1, for: Y, selectedItem: selectedItem)
                         } label: {
                             Image(systemName: "arrow.down.circle.fill")
@@ -112,7 +114,7 @@ struct ItemControlView: View {
         .padding(.trailing, 10)
         .padding(.bottom, 5)
         .onChange(of: selectedItem) {
-            self.count = selectedItem?.size ?? 150
+            self.count = selectedItem?.size ?? nilItemSizeNum
         }
     }
     
