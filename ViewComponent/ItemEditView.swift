@@ -1,5 +1,5 @@
 import SwiftUI
-import _SwiftData_SwiftUI
+import SwiftData
 import PhotosUI
 
 class EditImage: Identifiable, Equatable {
@@ -113,7 +113,7 @@ struct ItemEditView: View {
                 .padding()
             }
             .ignoresSafeArea(.keyboard, edges: .all)
-            .navigationTitle("Item Detail")
+            .navigationTitle(newItemToggle ? "New Item" : "Edit Item")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -277,64 +277,162 @@ struct PreviewSection: View {
     @Binding var selectedUIImages: [EditImage]
     @Binding var newImages: [EditImage]
     let selectedItem: Item
+    @State private var isShowingCamera = false
     
     var body: some View {
         VStack {
             if let mainImage = newMainImage?.uiImage,
                let object = selectedItem.generateSubjectImage(input: mainImage) {
                 VStack {
+                    Spacer()
                     Image(uiImage: object)
                         .resizable()
                         .scaledToFit()
-                    
+                    Spacer()
                     Button {
                         print("favorite button!")
                         favImage = newMainImage
                         print("next fav: \(favImage?.name ?? "no fav")")
                     } label: {
                         Image(systemName: favImage == newMainImage ? "star.fill" : "star")
+                            .font(.title2)
+                            .padding(.vertical, 20)
                     }
                 }
             } else {
-                Text("画像が選択されていません")
+                Spacer()
+                Text("No Image")
                     .foregroundColor(.gray)
+                Spacer()
             }
             
-            Spacer()
-            
-            PhotosPicker(
-                selection: $selectedPhotos,
-                maxSelectionCount: 5,
-                selectionBehavior: .ordered,
-                matching: .images
-            ) {
-                Label("Add Photos", systemImage: "photo.on.rectangle")
-                    .font(.title2)
-            }
-            .onChange(of: selectedPhotos) { _, photos in
-                Task {
-                    for photo in photos {
-                        if let data = try? await photo.loadTransferable(type: Data.self),
-                           let uiImage = UIImage(data: data) {
-                            let editImage = EditImage(
-                                name: FileManagerUtil.getUniqueImageFileName(),
-                                uiImage: uiImage
-                            )
-                            selectedUIImages.append(editImage)
-                            newImages.append(editImage)
-                            
-                            if newMainImage == nil {
-                                newMainImage = editImage
+            HStack {
+                PhotosPicker(
+                    selection: $selectedPhotos,
+                    maxSelectionCount: 5,
+                    selectionBehavior: .ordered,
+                    matching: .images
+                ) {
+                    Label("Photo Library", systemImage: "photo.on.rectangle")
+                        .labelStyle(IconOnlyLabelStyle())
+                        .font(.title2)
+                        .padding(.horizontal, 4)
+                }
+                .onChange(of: selectedPhotos) { _, photos in
+                    Task {
+                        for photo in photos {
+                            if let data = try? await photo.loadTransferable(type: Data.self),
+                               let uiImage = UIImage(data: data) {
+                                let editImage = EditImage(
+                                    name: FileManagerUtil.getUniqueImageFileName(),
+                                    uiImage: uiImage
+                                )
+                                selectedUIImages.append(editImage)
+                                newImages.append(editImage)
+                                
+                                if newMainImage == nil {
+                                    newMainImage = editImage
+                                }
                             }
                         }
+                        selectedPhotos = []
                     }
-                    selectedPhotos = []
                 }
+                
+                Button {
+                    isShowingCamera = true
+                } label: {
+                    Label("Camera", systemImage: "camera")
+                        .labelStyle(IconOnlyLabelStyle())
+                        .font(.title2)
+                        .padding(.horizontal, 4)
+                }
+            } // HStack
+        } // VStack
+        .padding()
+        .fullScreenCover(isPresented: $isShowingCamera) {
+            CameraView { image in
+                if let image = image {
+                    let editImage = EditImage(
+                        name: FileManagerUtil.getUniqueImageFileName(),
+                        uiImage: image
+                    )
+                    selectedUIImages.append(editImage)
+                    newImages.append(editImage)
+                    if newMainImage == nil {
+                        newMainImage = editImage
+                    }
+                }
+                isShowingCamera = false
             }
         }
-        .padding()
     }
 }
+
+struct CameraView: UIViewControllerRepresentable {
+    var onImagePicked: (UIImage?) -> Void
+    
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let parent: CameraView
+        
+        init(_ parent: CameraView) {
+            self.parent = parent
+        }
+        
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+            if let image = info[.originalImage] as? UIImage {
+                let uiImage = getCorrectOrientationUIImage(uiImage: image)
+                parent.onImagePicked(uiImage)
+            } else {
+                parent.onImagePicked(nil)
+            }
+        }
+        
+        private func getCorrectOrientationUIImage(uiImage:UIImage) -> UIImage {
+            var editedImage = UIImage()
+            let ciContext = CIContext(options: nil)
+            
+            switch uiImage.imageOrientation {
+            case .left:
+                guard let orientedCIImage = CIImage(image: uiImage)?.oriented(.left),
+                      let cgImage = ciContext.createCGImage(orientedCIImage, from: orientedCIImage.extent) else {
+                    return uiImage
+                }
+                editedImage = UIImage(cgImage: cgImage)
+            case .down:
+                guard let orientedCIImage = CIImage(image: uiImage)?.oriented(.down),
+                      let cgImage = ciContext.createCGImage(orientedCIImage, from: orientedCIImage.extent) else {
+                    return uiImage
+                }
+                editedImage = UIImage(cgImage: cgImage)
+            case .right:
+                guard let orientedCIImage = CIImage(image: uiImage)?.oriented(.right),
+                      let cgImage = ciContext.createCGImage(orientedCIImage, from: orientedCIImage.extent) else {
+                    return uiImage
+                }
+                editedImage = UIImage(cgImage: cgImage)
+            default:
+                editedImage = uiImage
+            }
+            
+            return editedImage
+        }
+    }
+}
+
 
 struct ItemImagesScrollView: View {
     @Binding var newMainImage: EditImage?

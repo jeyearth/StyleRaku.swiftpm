@@ -28,11 +28,12 @@ let package = Package(
             ],
             supportedInterfaceOrientations: [
                 .landscapeRight,
-                .landscapeLeft,
+                .landscapeLeft
             ],
             capabilities: [
                 .fileAccess(.pictureFolder, mode: .readWrite),
-                .photoLibrary(purposeString: "写真追加のために写真へアクセスを求めます")
+                .photoLibrary(purposeString: "It asks for access to the photo to add the photo."),
+                .camera(purposeString: "It asks for access to the camera to add photos.")
             ]
         )
     ],
