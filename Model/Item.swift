@@ -37,6 +37,10 @@ enum Season: String {
     case winter = "Winter"
 }
 
+struct ImageFile: Codable {
+    let name: String
+}
+
 @Model
 final class Item {
     @Attribute(.unique) var id: UUID
@@ -50,7 +54,12 @@ final class Item {
     var color: String?
     var mainImage: String?  // mainImage のファイル名（ファイルシステムに保存）
     var subjectImage: String?  // subjectImage のファイル名（加工された画像の保存先）
-    @Attribute var images: [String]  // 複数画像のファイル名リスト（ファイルシステムに保存）
+//    @Attribute var images: [String]  // 複数画像のファイル名リスト（ファイルシステムに保存）
+    var imagesData: [ImageFile] = []
+    var images: [String] {
+        get { imagesData.map(\.self.name) }
+        set { imagesData = newValue.compactMap { ImageFile(name: $0) } as? [ImageFile] ?? [] }
+    }
     var size: Float
     
     init() {
@@ -58,7 +67,6 @@ final class Item {
         self.createdAt = Date()
         self.descriptionText = ""
         self.type = ItemType.others
-        self.images = []
         self.size = ItemType.getDefaultSize(ItemType.others)
     }
     
@@ -67,7 +75,6 @@ final class Item {
         self.createdAt = Date()
         self.descriptionText = descriptionText
         self.type = type
-        self.images = []
         self.size = ItemType.getDefaultSize(type)
     }
     
