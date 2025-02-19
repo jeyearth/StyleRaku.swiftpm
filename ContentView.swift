@@ -6,89 +6,78 @@ struct ContentView: View {
     @Query var styles: [Style]
     
     @State var selectedStyle: Style? // サイドバーで選択された項目
-//    private let stylings = ["Coordination 1", "Coordination 2", "Coordination 3"] // サンプルデータ
     @State private var showingNewStyleSheet: Bool = false
     @State private var showingExistingStyleSheet: Bool = false
     
     @State var newStyle: Style = Style()
     
+    enum Selection: Hashable {
+        case items
+        case style(Style)
+    }
+    
+    @State private var selection: Selection? = .items
+    @State private var styleToEdit: Style? = nil
+    
     var body: some View {
         NavigationSplitView {
-            List(selection: $selectedStyle) {
+            List(selection: $selection) {
                 Section {
-                    NavigationLink {
-                        VStack {
-                            Text("Home View")
-                        }
-                    } label: {
-                        Label("Home", systemImage: "house")
-                    }
-                    NavigationLink {
-                        VStack {
-                            Text("Compare View")
-                        }
-                    } label: {
-                        Label("Copare", systemImage: "square.and.line.vertical.and.square")
-                    }
-                    NavigationLink {
-                        ItemsView(addItem: .constant(Item()), draggingItem: .constant(nil), isShowingSelectedItemView: true, itemContainerHeight: 260)
-                    } label: {
+                    NavigationLink(value: Selection.items) {
                         Label("Items", systemImage: "cabinet")
                     }
-                    
                 }
                 Section(header: Text("Styling")) {
-                    ForEach(styles, id: \.id) { style in
-                        NavigationLink(value: style) {
+                    ForEach(styles.sorted(by: { $0.createdAt < $1.createdAt }), id: \.id) { style in
+                        NavigationLink(value: Selection.style(style)) {
                             Label(style.name, systemImage: "person")
                         }
                         .contextMenu {
                             Button(action: {
+                                self.styleToEdit = style  // 編集対象のStyleを設定
                                 self.showingExistingStyleSheet.toggle()
                             }) {
                                 Label("Edit", systemImage: "square.and.pencil")
                             }
                             Button(role: .destructive) {
-                                self.deleteStyle()
+                                self.deleteStyle(style)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                         }
                     }
                     Button(action: {
-                        // 新しいスタイリングを追加する処理
-                        print("Add Styling tapped")
                         self.showingNewStyleSheet.toggle()
                     }) {
                         Label("Add Styling", systemImage: "plus")
                     }
                 }
             }
-            .listStyle(SidebarListStyle()) // サイドバー形式
+            .listStyle(SidebarListStyle())
             .navigationTitle("StyleRaku")
         } detail: {
-            if self.selectedStyle != nil {
-                StylingDetailView(selectedStyle: self.$selectedStyle)
-            } else {
+            switch selection {
+            case .items:
+                ItemsView(addItem: .constant(Item()),
+                         draggingItem: .constant(nil),
+                         isShowingSelectedItemView: true,
+                         itemContainerHeight: 260)
+            case .style(let style):
+                StylingDetailView(selectedStyle: .constant(style))
+            case nil:
                 Text("Select a styling")
                     .font(.title)
                     .foregroundColor(.secondary)
-            }
-        }
-        .onAppear {
-            let sampleStyle: Style = Style(name: "Coordination 1")
-            if styles.contains(sampleStyle) {
-                context.insert(sampleStyle)
             }
         }
         .sheet(isPresented: $showingNewStyleSheet, content: {
             StyleEditView(newStyleToggle: true, selectedStyle: $newStyle)
         })
         .sheet(isPresented: $showingExistingStyleSheet, content: {
-            if let selectedStyle = self.selectedStyle {
-                StyleEditView(newStyleToggle: false, selectedStyle: .constant(selectedStyle))
+            if let style = styleToEdit {
+                StyleEditView(newStyleToggle: false, selectedStyle: .constant(style))
             } else {
-                Text("Select a styling")
+                Text("Failed to retrieve Style.")
                     .font(.title)
                     .foregroundColor(.secondary)
             }
@@ -96,12 +85,14 @@ struct ContentView: View {
         
     }
     
-    private func deleteStyle() {
-        guard let selectedStyle = self.selectedStyle else { return }
-        context.delete(selectedStyle)
+    private func deleteStyle(_ style: Style) {
+        context.delete(style)
+        if case .style(let selectedStyle) = selection, selectedStyle.id == style.id {
+            selection = nil
+        }
         
         do {
-            try context.save() // 削除を保存
+            try context.save()
         } catch {
             print("Error saving context: \(error.localizedDescription)")
         }

@@ -55,7 +55,7 @@ struct StyleEditView: View {
                     } // Form
                 } // VStack
             }
-            .navigationTitle("Style Detail")
+            .navigationTitle(newStyleToggle ? "New Style" : "Edit Style")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
