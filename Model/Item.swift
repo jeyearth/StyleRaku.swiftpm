@@ -47,10 +47,10 @@ final class Item {
     var createdAt: Date
     var descriptionText: String?
     var type: ItemType
-    var spring: Bool = true
-    var summer: Bool = true
-    var autumn: Bool = true
-    var winter: Bool = true
+    var spring: Bool
+    var summer: Bool
+    var autumn: Bool
+    var winter: Bool
     var color: String?
     var mainImage: String?  // mainImage のファイル名（ファイルシステムに保存）
     var subjectImage: String?  // subjectImage のファイル名（加工された画像の保存先）
@@ -67,6 +67,10 @@ final class Item {
         self.createdAt = Date()
         self.descriptionText = ""
         self.type = ItemType.others
+        self.spring = true
+        self.summer = true
+        self.autumn = true
+        self.winter = true
         self.size = ItemType.getDefaultSize(ItemType.others)
     }
     
@@ -75,9 +79,34 @@ final class Item {
         self.createdAt = Date()
         self.descriptionText = descriptionText
         self.type = type
+        self.spring = true
+        self.summer = true
+        self.autumn = true
+        self.winter = true
         self.size = ItemType.getDefaultSize(type)
     }
     
+    init(descriptionText: String, type: ItemType, uiImageName: String,  _ spring: Bool, _ summer: Bool, _ autumn: Bool, _ winter: Bool) {
+        self.id = UUID()
+        self.createdAt = Date()
+        self.descriptionText = descriptionText
+        self.type = type
+        self.size = ItemType.getDefaultSize(type)
+        
+        self.spring = spring
+        self.summer = summer
+        self.autumn = autumn
+        self.winter = winter
+        
+        guard let uiImage: UIImage = UIImage(named: uiImageName) else { return }
+        self.initImage(uiImage: uiImage)
+    }
+    
+    func initImage(uiImage: UIImage) {
+        guard let fileName = self.addImage(inputImage: uiImage) else { return }
+        self.setMainImage(fileName)
+    }
+
     //
     // Color
     //
