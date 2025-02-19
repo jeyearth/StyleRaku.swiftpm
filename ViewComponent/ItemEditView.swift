@@ -56,13 +56,12 @@ struct ItemEditView: View {
             self._winter = State(initialValue: wrappedItem.winter)
             
             self._selectedUIImages = State(initialValue: Self.initSelectedUIImages(inputItem: wrappedItem))
-            if let mainImage = wrappedItem.getMainImage(),
-               let mainImageName = wrappedItem.mainImage {
-                self._newMainImage = State(initialValue: EditImage(name: mainImageName, uiImage: mainImage))
-            }
             
-            if let mainName = wrappedItem.mainImage {
-                self._favImage = State(initialValue: EditImage(name: mainName, uiImage: wrappedItem.getImage(imageName: mainName)))
+            if let mainImageName = wrappedItem.mainImage {
+                self._favImage = State(initialValue: EditImage(name: mainImageName, uiImage: wrappedItem.getImage(imageName: mainImageName)))
+                if let mainImage = wrappedItem.getMainImage() {
+                    self._newMainImage = State(initialValue: EditImage(name: mainImageName, uiImage: mainImage))
+                }
             }
         }
     }
@@ -143,9 +142,9 @@ struct ItemEditView: View {
         
         selectedItem.size = ItemType.getDefaultSize(selectedItem.type)
         
-        if favImage == nil {
-            favImage = selectedUIImages.first
-        }
+//        if favImage == nil {
+//            favImage = selectedUIImages.first
+//        }
         
         if newItemToggle {
             addNewItem()
@@ -159,6 +158,9 @@ struct ItemEditView: View {
     }
     
     private func addNewItem() {
+        if favImage == nil {
+            favImage = selectedUIImages.first
+        }
         for editImage in selectedUIImages {
             if let uiImage = editImage.uiImage {
                 guard let fileName = selectedItem.addImage(inputImage: uiImage, fileName: editImage.name) else { continue }
@@ -178,12 +180,19 @@ struct ItemEditView: View {
         let imagesToDelete = selectedItem.images.filter { !updatedImageNames.contains($0) }
         
         for fileName in imagesToDelete {
-            FileManagerUtil.deleteImage(fileName: fileName)
             selectedItem.removeImage(fileName: fileName)
+            if favImage?.name == fileName {
+                favImage = nil
+            }
+        }
+        
+        if favImage == nil {
+            favImage = selectedUIImages.first
         }
         
         // Add new images
         for editImage in newImages {
+            if !selectedUIImages.contains(editImage) { continue }
             if let uiImage = editImage.uiImage {
                 _ = selectedItem.addImage(inputImage: uiImage, fileName: editImage.name)
             }
