@@ -26,25 +26,30 @@ struct HorizontalImageCardScrollView: View {
     var body: some View {
         VStack {
             if isShowingSelectedItemView {
+                Spacer()
                 VStack {
                     if selectedItem == nil {
-                        Text("select Item")
+                        Text("Select an Item")
                     } else {
                         HStack {
                             if let subject = selectedItem?.getSubjectImage() {
                                 Image(uiImage: subject)
                                     .resizable()
                                     .scaledToFit()
+                                    .frame(width: itemContainerHeight)
                             } else {
                                 Text("no subject")
                             }
                             VStack {
+                                Spacer()
                                 Text(selectedItem?.descriptionText ?? "no description")
+                                Spacer()
                                 Button(action: {
                                     self.showingEditSheet.toggle()
                                     print("Edtt!")
                                 }) {
                                     Label("Edit", systemImage: "square.and.pencil")
+                                        .font(.title2)
                                 }
                                 .sheet(isPresented: $showingEditSheet) {
                                     if let selectedItem = selectedItem {
@@ -56,14 +61,14 @@ struct HorizontalImageCardScrollView: View {
                                         Text("No item selected")
                                     }
                                 } // sheet
-                                
-                            }
+                            } // VStacl
+                            .padding(.leading, 80)
                         } // HStack
                     }
                     
                 }
-                Spacer()
             }
+            Spacer()
             
             VStack {
                 HStack {
@@ -77,7 +82,6 @@ struct HorizontalImageCardScrollView: View {
                             .padding(.top, 10)
                     }
                 }
-                Spacer()
             }
             
             let filteredItems = getFilteredItems()
@@ -135,15 +139,3 @@ struct HorizontalImageCardScrollView: View {
         }
     }
 }
-//
-//#Preview {
-//    @State var cards = [
-//        (image: "down", title: "山の風景", description: "美しい山々と緑豊かな自然の景色"),
-//        (image: "down", title: "ビーチリゾート", description: "穏やかな海と白い砂浜のパラダイス"),
-//        (image: "down", title: "都市の夜景", description: "輝く街の灯りと近代的な建築"),
-//        (image: "down", title: "深い森", description: "神秘的で静かな森の内部"),
-//        (image: "down", title: "夕日", description: "色とりどりの空と沈みゆく太陽")
-//    ]
-//    
-//    HorizontalImageCardScrollView(selectedItemViewType: .constant(ItemViewType.all), _items: cards)
-//}

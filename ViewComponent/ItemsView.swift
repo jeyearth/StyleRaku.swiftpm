@@ -33,8 +33,9 @@ struct ItemsView: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .padding(.vertical, 12)
+                .padding(.vertical, isShowingSelectedItemView ? 10 : 2)
                 .padding(.horizontal, 10)
+                Spacer()
                 VStack {
                     HorizontalImageCardScrollView(
                         selectedItemViewType: $selectedItemViewType,
@@ -44,7 +45,7 @@ struct ItemsView: View {
                         itemContainerHeight: itemContainerHeight
                     )
                 }
-                .frame(height: itemContainerHeight * 1.3)
+//                .frame(height: itemContainerHeight * 1.3)
             }
             VStack {
                 Spacer()

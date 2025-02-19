@@ -62,6 +62,9 @@ struct ContentView: View {
                          draggingItem: .constant(nil),
                          isShowingSelectedItemView: true,
                          itemContainerHeight: 260)
+                .navigationBarTitle("Items")
+                .toolbarBackground(Color(.systemGray6), for: .navigationBar)
+                .toolbarBackground(.visible, for: .navigationBar)
             case .style(let style):
                 StylingDetailView(selectedStyle: .constant(style))
             case nil:
