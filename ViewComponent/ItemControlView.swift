@@ -101,6 +101,7 @@ struct ItemControlView: View {
                         }
                     }
                 }
+                .disabled(selectedItem == nil)
                 .frame(width: 180)
                 .frame(maxHeight: .infinity)
             }
