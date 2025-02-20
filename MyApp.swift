@@ -46,7 +46,6 @@ struct MyApp: App {
         // 初期データの作成
         let initialItems: [Item] = [
             // TOPS
-            Item(descriptionText: "Initial Tops 00", type: .tops, uiImageName: "tops", true, true, true, true),
             Item(descriptionText: "Initial Tops 01", type: .tops, uiImageName: "tops01", true, true, true, true),
             Item(descriptionText: "Initial Tops 02", type: .tops, uiImageName: "tops02", true, true, true, true),
             Item(descriptionText: "Initial Tops 03", type: .tops, uiImageName: "tops03", true, true, true, true),
