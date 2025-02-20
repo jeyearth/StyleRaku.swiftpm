@@ -12,7 +12,6 @@ enum ItemType: String, CaseIterable, Codable, Identifiable {
     case tops = "Tops"
     case bottoms = "Bottoms"
     case shoes = "Shoes"
-    case others = "Others"
     
     var id: String { rawValue }
     
@@ -24,10 +23,18 @@ enum ItemType: String, CaseIterable, Codable, Identifiable {
             return 140
         case .shoes:
             return 100
-        default:
-            return 75
         }
     }
+}
+
+// Itemリスト表示用のSegmented Control
+enum ItemViewType: String, CaseIterable, Identifiable {
+    case all = "All"
+    case tops = "Tops"
+    case bottoms = "Bottoms"
+    case shoes = "Shoes"
+    
+    var id: String { rawValue }
 }
 
 enum Season: String {
@@ -54,7 +61,6 @@ final class Item {
     var color: String?
     var mainImage: String?  // mainImage のファイル名（ファイルシステムに保存）
     var subjectImage: String?  // subjectImage のファイル名（加工された画像の保存先）
-//    @Attribute var images: [String]  // 複数画像のファイル名リスト（ファイルシステムに保存）
     var imagesData: [ImageFile] = []
     var images: [String] {
         get { imagesData.map(\.self.name) }
@@ -66,12 +72,12 @@ final class Item {
         self.id = UUID()
         self.createdAt = Date()
         self.descriptionText = ""
-        self.type = ItemType.others
+        self.type = ItemType.tops
         self.spring = true
         self.summer = true
         self.autumn = true
         self.winter = true
-        self.size = ItemType.getDefaultSize(ItemType.others)
+        self.size = ItemType.getDefaultSize(ItemType.tops)
     }
     
     init(descriptionText: String, type: ItemType) {

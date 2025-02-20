@@ -97,9 +97,6 @@ final class ShuffleData {
                     self.filterdBottoms.append(item)
                 case .shoes:
                     self.filterdShoes.append(item)
-                default :
-                    print("this item is .others")
-                    break
                 }
             }
         }
@@ -135,8 +132,6 @@ final class ShuffleData {
         case .shoes:
             targetItems = filterdShoes
             excludingItem = selectedShoes
-        case .others:
-            return nil
         }
         
         let availableItems = targetItems.filter { $0.id != excludingItem?.id }

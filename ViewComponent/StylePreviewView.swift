@@ -16,7 +16,7 @@ struct StylePreviewView: View {
     @Binding var draggingItem: Item?
     @Binding var selectedItemType: ItemType?
     @Binding var selectedItem: Item?
-    @State private var isDropping: Bool = false  // ドロップエリア判定
+    @State private var isDropping: Bool = false
     
     init(selectedStyle: Binding<Style?>, addItem: Binding<Item?>, draggingItem: Binding<Item?>, selectedItemType: Binding<ItemType?>, selectedItem: Binding<Item?>) {
         self._selectedStyle = selectedStyle
@@ -50,7 +50,6 @@ struct StylePreviewView: View {
             .onTapGesture {
                 self.selectedItemType = type
                 self.selectedItem = selectedStyle?.getItem(type)
-                print(image.size)
             }
 //            .gesture(
 //                DragGesture()
@@ -106,8 +105,6 @@ struct StylePreviewView: View {
             return position.y + (size / imageSize.width) * imageSize.height / 2
         case .shoes:
             return position.y
-        default:
-            return 100
         }
     }
     

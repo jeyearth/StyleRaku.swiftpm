@@ -16,21 +16,6 @@ struct FileManagerUtil {
         return UUID().uuidString + ".png"
     }
     
-    /// 画像を保存
-//    static func saveImage(_ image: UIImage, fileName: String) -> String? {
-//        let fileURL = documentsDirectory.appendingPathComponent(fileName)
-//        if let data = image.jpegData(compressionQuality: 0.8) {
-//            do {
-//                try data.write(to: fileURL)
-//                return fileURL.lastPathComponent // 保存したファイル名を返す
-//            } catch {
-//                print("Error saving image: \(error)")
-//                return nil
-//            }
-//        }
-//        return nil
-//    }
-    
     // 透過png対応メソッド
     static func saveImage(_ image: UIImage, fileName: String) -> String? {
         let fileURL = documentsDirectory.appendingPathComponent(fileName)

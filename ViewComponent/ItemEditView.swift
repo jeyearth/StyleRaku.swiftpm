@@ -26,7 +26,7 @@ struct ItemEditView: View {
     
     @EnvironmentObject private var viewModel: StylingDetailViewModel
     
-    @State private var inputItemType: ItemType = .others
+    @State private var inputItemType: ItemType? = nil
     @State private var inputDescriptionText: String = ""
     @State private var spring: Bool = true
     @State private var summer: Bool = true
@@ -126,13 +126,14 @@ struct ItemEditView: View {
                         saveChanges()
                         dismiss()
                     }
-                    .disabled(selectedUIImages.isEmpty)
+                    .disabled(selectedUIImages.isEmpty || inputItemType == nil)
                 }
             } // toolbar
         } // NavigationStack
     } // body
     
     private func saveChanges() {
+        guard let inputItemType = inputItemType else { return }
         selectedItem.type = inputItemType
         selectedItem.descriptionText = inputDescriptionText
         selectedItem.spring = self.spring
@@ -141,10 +142,6 @@ struct ItemEditView: View {
         selectedItem.winter = self.winter
         
         selectedItem.size = ItemType.getDefaultSize(selectedItem.type)
-        
-//        if favImage == nil {
-//            favImage = selectedUIImages.first
-//        }
         
         if newItemToggle {
             addNewItem()
@@ -208,7 +205,7 @@ struct ItemEditView: View {
     }
     
     private func resetState() {
-        inputItemType = .others
+        inputItemType = nil
         inputDescriptionText = ""
         spring = true
         summer = true
@@ -222,7 +219,7 @@ struct ItemEditView: View {
 }
 
 struct FormSection: View {
-    @Binding var inputItemType: ItemType
+    @Binding var inputItemType: ItemType?
     @Binding var inputDescriptionText: String
     @Binding var spring: Bool
     @Binding var summer: Bool
@@ -249,8 +246,9 @@ struct FormSection: View {
     var body: some View {
         Form {
             Picker("Type", selection: $inputItemType) {
-                ForEach(ItemType.allCases) { type in
-                    Text(type.rawValue).tag(type)
+                Text("None").tag(nil as ItemType?)  // nil を扱うための選択肢
+                ForEach(ItemType.allCases, id: \.self) { type in
+                    Text(type.rawValue).tag(type as ItemType?)
                 }
             }
             .pickerStyle(.menu)

@@ -8,7 +8,6 @@
 
 import SwiftUI
 
-// ① ViewModelを作成
 class StylingDetailViewModel: ObservableObject {
     @Published var shuffleData = ShuffleData()
     

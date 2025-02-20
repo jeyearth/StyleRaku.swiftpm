@@ -5,7 +5,7 @@ import SwiftData
 struct MyApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Face.self, Item.self, Style.self,
+            Item.self, Style.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         

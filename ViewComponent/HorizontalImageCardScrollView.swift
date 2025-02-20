@@ -135,7 +135,7 @@ struct HorizontalImageCardScrollView: View {
         case .shoes:
             return .shoes
         default:
-            return .others
+            return .tops
         }
     }
 }

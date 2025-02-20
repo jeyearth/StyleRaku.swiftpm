@@ -80,8 +80,6 @@ struct ShuffleControlView: View {
                 shuffleData.bottomsLock = newValue
             case .shoes:
                 shuffleData.shoesLock = newValue
-            default:
-                return
             }
         }
     }
