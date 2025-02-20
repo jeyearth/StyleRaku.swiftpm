@@ -229,17 +229,24 @@ final class Item {
             print("UIImageからCGImageへの変換に失敗しました。")
             return nil
         }
+        
         let ciImage = CIImage(cgImage: cgImage)
         print("CIImageに変換成功: \(ciImage)")
         
         let imageHelper = ImageVisionHelper()
-        guard let outputCIImage = imageHelper.removeBackground(from: ciImage, croppedToInstanceExtent: true)
-        else {
-            print("Subect がありません")
+        guard let outputCIImage = imageHelper.removeBackground(from: ciImage, croppedToInstanceExtent: true) else {
+            print("Subject がありません")
             return nil
         }
         
-        let outputImage = UIImage(cgImage: imageHelper.render(ciImage: outputCIImage))
+        guard let outputCGImage = imageHelper.render(ciImage: outputCIImage) as CGImage? else {
+            print("CGImage の生成に失敗しました。")
+            return nil
+        }
+        
+        // `input.imageOrientation` を適用して向きを維持
+        let outputImage = UIImage(cgImage: outputCGImage, scale: input.scale, orientation: input.imageOrientation)
+        
         return outputImage
     }
     
