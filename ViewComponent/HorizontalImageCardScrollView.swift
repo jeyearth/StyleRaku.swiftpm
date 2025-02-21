@@ -110,6 +110,7 @@ struct HorizontalImageCardScrollView: View {
             } // ScrollView
             .padding(.bottom, 20)
         }
+        .ignoresSafeArea(.keyboard, edges: .all)
         .onChange(of: selectedItemViewType, {
             // ItemViewTypeを変更したら選択されたItemをnilに変更
             selectedItem = nil

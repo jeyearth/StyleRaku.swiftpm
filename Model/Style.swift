@@ -9,9 +9,9 @@ import SwiftUI
 import SwiftData
 
 let defaultItemPosition = [
-    "0,-20", // TOPS
-    "0,-30", // BOTTOMS
-    "0,280" // SHOES
+    "0,-80", // TOPS
+    "0,-100", // BOTTOMS
+    "0,270" // SHOES
 ]
 
 @Model

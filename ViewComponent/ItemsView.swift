@@ -45,7 +45,6 @@ struct ItemsView: View {
                         itemContainerHeight: itemContainerHeight
                     )
                 }
-//                .frame(height: itemContainerHeight * 1.3)
             }
             VStack {
                 Spacer()

@@ -18,11 +18,11 @@ enum ItemType: String, CaseIterable, Codable, Identifiable {
     static func getDefaultSize(_ type: ItemType) -> Float {
         switch type {
         case .tops:
-            return 220
+            return 240
         case .bottoms:
-            return 140
+            return 160
         case .shoes:
-            return 100
+            return 140
         }
     }
 }
