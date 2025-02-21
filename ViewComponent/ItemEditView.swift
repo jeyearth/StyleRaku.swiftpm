@@ -454,7 +454,7 @@ struct ItemImagesScrollView: View {
                             Image(uiImage: uiImage)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(height: 100)
+                                .frame(height: 160)
                                 .cornerRadius(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
@@ -477,7 +477,7 @@ struct ItemImagesScrollView: View {
             }
             .padding()
         }
-        .frame(height: 120)
+        .frame(height: 180)
     }
     
     private func deleteImage(_ editImage: EditImage) {

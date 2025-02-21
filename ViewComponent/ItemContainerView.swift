@@ -35,7 +35,7 @@ struct ItemContainerView: View {
 //                        .aspectRatio(contentMode: .fill)
                         .frame(width: itemContainerHeight * 0.8 - 40, height: itemContainerHeight - 40)
                 } else {
-                    Text("no subject image")
+                    Text("No Subject Image")
                 }
                 
             }

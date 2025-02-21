@@ -37,7 +37,7 @@ struct ShuffleControlView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .padding(10)
+            .padding(6)
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color(.systemBackground)) // 背景色を白に設定
@@ -112,7 +112,7 @@ struct ShuffleControlView: View {
                 Spacer()
                 Text(season.rawValue)
             }
-            .padding(.vertical, 2)
+            .padding(.vertical, 1)
         }
         .foregroundColor(Color.primary)
     }
@@ -129,10 +129,10 @@ struct ShuffleControlView: View {
             Image(systemName: "shuffle")
                 .padding([.leading, .trailing], 10)
         }
-        .padding(10)
+        .padding(8)
         .foregroundColor(Color.white)
         .background(Color.blue)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
         .font(.title3)
     }
     
