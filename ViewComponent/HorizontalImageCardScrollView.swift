@@ -38,11 +38,11 @@ struct HorizontalImageCardScrollView: View {
                                     .scaledToFit()
                                     .frame(width: itemContainerHeight)
                             } else {
-                                Text("no subject")
+                                Text("No Subject")
                             }
                             VStack {
                                 Spacer()
-                                Text(selectedItem?.descriptionText ?? "no description")
+                                Text(selectedItem?.descriptionText ?? "No Description")
                                 Spacer()
                                 Button(action: {
                                     self.showingEditSheet.toggle()
@@ -112,7 +112,6 @@ struct HorizontalImageCardScrollView: View {
         }
         .ignoresSafeArea(.keyboard, edges: .all)
         .onChange(of: selectedItemViewType, {
-            // ItemViewTypeを変更したら選択されたItemをnilに変更
             selectedItem = nil
         })
         

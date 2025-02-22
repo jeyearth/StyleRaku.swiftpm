@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  ItemContainerView.swift
 //  StyleRaku
 //
 //  Created by Jey Hirano on 2025/01/23
@@ -32,7 +32,6 @@ struct ItemContainerView: View {
                     Image(uiImage: subjectImage)
                         .resizable()
                         .scaledToFit()
-//                        .aspectRatio(contentMode: .fill)
                         .frame(width: itemContainerHeight * 0.8 - 40, height: itemContainerHeight - 40)
                 } else {
                     Text("No Subject Image")
@@ -69,12 +68,13 @@ struct ItemContainerView: View {
     }
     
     private func deleteItem() {
+        item.deleteItemImages()
         context.delete(item)
-//        do {
-//            try context.save() // 削除を保存
-//        } catch {
-//            print("Error saving context: \(error.localizedDescription)")
-//        }
+        do {
+            try context.save()
+        } catch {
+            print("Error saving context: \(error.localizedDescription)")
+        }
     }
     
 }

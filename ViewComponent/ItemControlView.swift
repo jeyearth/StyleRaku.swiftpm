@@ -110,7 +110,7 @@ struct ItemControlView: View {
             .padding(10)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(.systemBackground)) // 背景色を白に設定
+                    .fill(Color(.systemBackground))
             )
         }
         .padding(.top, 10)
@@ -124,10 +124,10 @@ struct ItemControlView: View {
     func updatePosition(_ addNum: CGFloat, for axis: Int, selectedItem: Item?) {
         guard let selectedItem = selectedItem else { return }
         if axis == self.X {
-            // X軸
+            // X
             updatePositionX(addNum, type: selectedItem.type)
         } else if axis == self.Y {
-            // Y軸
+            // Y
             updatePositionY(addNum, type: selectedItem.type)
         }
     }

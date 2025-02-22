@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  Item.swift
 //  StyleRaku
 //
 //  Created by Jey Hirano on 2025/01/18.
@@ -27,7 +27,6 @@ enum ItemType: String, CaseIterable, Codable, Identifiable {
     }
 }
 
-// Itemリスト表示用のSegmented Control
 enum ItemViewType: String, CaseIterable, Identifiable {
     case all = "All"
     case tops = "Tops"
@@ -58,9 +57,8 @@ final class Item {
     var summer: Bool
     var autumn: Bool
     var winter: Bool
-    var color: String?
-    var mainImage: String?  // mainImage のファイル名（ファイルシステムに保存）
-    var subjectImage: String?  // subjectImage のファイル名（加工された画像の保存先）
+    var mainImage: String?
+    var subjectImage: String?
     var imagesData: [ImageFile] = []
     var images: [String] {
         get { imagesData.map(\.self.name) }
@@ -112,41 +110,6 @@ final class Item {
         guard let fileName = self.addImage(inputImage: uiImage) else { return }
         self.setMainImage(fileName)
     }
-
-    //
-    // Color
-    //
-    
-    // String -> Color
-    func stringToColor(_ string: String) -> Color? {
-        let components = string.split(separator: ",").compactMap { Double($0) }
-        guard components.count == 4 else { return nil }
-        
-        let red = components[0]
-        let green = components[1]
-        let blue = components[2]
-        let alpha = components[3]
-        
-        return Color(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
-    }
-    
-    // Color -> String
-    func colorToString(_ color: Color) -> String {
-        let uiColor = UIColor(color) // Color を UIColor に変換
-        guard let components = uiColor.cgColor.components else { return "" }
-        
-        let red = components[0]
-        let green = components[1]
-        let blue = components[2]
-        let alpha = components.count > 3 ? components[3] : 1.0
-        
-        return "\(red),\(green),\(blue),\(alpha)"
-    }
-    
-    func setColor(_ inputColor: Color) {
-        let colorString = colorToString(inputColor)
-        self.color = colorString
-    }
     
     //
     // Image
@@ -183,7 +146,6 @@ final class Item {
         }
     }
     
-    // imagesに追加
     func addImage(inputImage: UIImage) -> String? {
         guard let inputImageName = FileManagerUtil.saveImage(inputImage, fileName: FileManagerUtil.getUniqueImageFileName()) else {
             return nil
@@ -200,7 +162,6 @@ final class Item {
         return inputImageName
     }
     
-    // imageを保存
     func saveImage(inputImage: UIImage) -> String? {
         guard let imageName = FileManagerUtil.saveImage(inputImage, fileName: FileManagerUtil.getUniqueImageFileName()) else { return nil }
         return imageName
@@ -232,28 +193,45 @@ final class Item {
     func generateSubjectImage(input: UIImage) -> UIImage? {
         
         guard let cgImage = input.cgImage else {
-            print("UIImageからCGImageへの変換に失敗しました。")
+            print("Conversion from UIImage to CGImage failed")
             return nil
         }
         
         let ciImage = CIImage(cgImage: cgImage)
-        print("CIImageに変換成功: \(ciImage)")
+        print("Successfully converted to CIImage: \(ciImage)")
         
         let imageHelper = ImageVisionHelper()
         guard let outputCIImage = imageHelper.removeBackground(from: ciImage, croppedToInstanceExtent: true) else {
-            print("Subject がありません")
+            print("Subject is missing.")
             return nil
         }
         
         guard let outputCGImage = imageHelper.render(ciImage: outputCIImage) as CGImage? else {
-            print("CGImage の生成に失敗しました。")
+            print("Failed to generate CGImage")
             return nil
         }
         
-        // `input.imageOrientation` を適用して向きを維持
         let outputImage = UIImage(cgImage: outputCGImage, scale: input.scale, orientation: input.imageOrientation)
         
         return outputImage
+    }
+    
+    func deleteItemImages() {
+        
+        // mainImage
+        if let mainImageName = self.mainImage {
+            self.removeImage(fileName: mainImageName)
+        }
+        
+        // subjectImage
+        if let subjectImageName = self.subjectImage {
+            self.removeImage(fileName: subjectImageName)
+        }
+        
+        for imageName in images {
+            self.removeImage(fileName: imageName)
+        }
+        
     }
     
 }

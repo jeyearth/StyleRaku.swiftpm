@@ -187,7 +187,6 @@ struct ItemEditView: View {
             favImage = selectedUIImages.first
         }
         
-        // Add new images
         for editImage in newImages {
             if !selectedUIImages.contains(editImage) { continue }
             if let uiImage = editImage.uiImage {
@@ -195,12 +194,10 @@ struct ItemEditView: View {
             }
         }
         
-        // Update main image if needed
         if let fav = self.favImage {
             selectedItem.setMainImage(fav.name)
         }
         
-//        try? context.save()
         viewModel.updateShuffleData(items)
     }
     
@@ -246,7 +243,7 @@ struct FormSection: View {
     var body: some View {
         Form {
             Picker("Type", selection: $inputItemType) {
-                Text("None").tag(nil as ItemType?)  // nil を扱うための選択肢
+                Text("None").tag(nil as ItemType?)
                 ForEach(ItemType.allCases, id: \.self) { type in
                     Text(type.rawValue).tag(type as ItemType?)
                 }

@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  StylingDetailView.swift
 //  StyleRaku
 //
 //  Created by Jey Hirano on 2025/01/19.
@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 
-// 共有するモデル
 class SharedItemType: ObservableObject {
     @Published var type: ItemType? = nil
 }
@@ -31,9 +30,9 @@ struct StylingDetailView: View {
             Divider()
             GeometryReader { geometry in
                 HStack(spacing: 0) {
-                    // 左側: ItemリストView（6割幅）
+                    // LEFT
                     ZStack {
-                        Color(.systemGray6)   // 背景色
+                        Color(.systemGray6)
                         VStack {
                             HStack {
                                 ShuffleControlView(selectedStyle: $selectedStyle, shuffleData: $viewModel.shuffleData, selectedItem: $selectedItem)
@@ -50,7 +49,7 @@ struct StylingDetailView: View {
                     }
                     .frame(width: geometry.size.width * 0.65)
                     
-                    // 右側: プレビューView（4割幅）
+                    // RIGHT
                     StylePreviewView(
                         selectedStyle: $selectedStyle,
                         addItem: $addItem,

@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  Style.swift
 //  StyleRaku
 //
 //  Created by Jey Hirano on 2025/01/18.
@@ -16,28 +16,18 @@ let defaultItemPosition = [
 
 @Model
 final class Style {
-    // MARK: - Properties
     @Attribute(.unique) var id: UUID
     var createdAt: Date
     var name: String
     var descriptionText: String?
     
-    // MARK: - Relationships
     @Relationship(deleteRule: .nullify) var tops: Item?
     @Relationship(deleteRule: .nullify) var bottoms: Item?
     @Relationship(deleteRule: .nullify) var shoes: Item?
     
-    // MARK: - Position Properties (Stored as Strings)
-    var facePositionString: String = "50,50"
     var topsPositionString: String = defaultItemPosition[0]
     var bottomsPositionString: String = defaultItemPosition[1]
     var shoesPositionString: String = defaultItemPosition[2]
-    
-    // MARK: - Computed Properties for CGPoint conversion
-    var facePosition: CGPoint {
-        get { CGPoint(fromString: facePositionString) }
-        set { facePositionString = newValue.toString }
-    }
     
     var topsPosition: CGPoint {
         get { CGPoint(fromString: topsPositionString) }
@@ -54,7 +44,6 @@ final class Style {
         set { shoesPositionString = newValue.toString }
     }
     
-    // MARK: - Initializers
     init() {
         self.id = UUID()
         self.createdAt = Date()
@@ -79,7 +68,6 @@ final class Style {
         }
     }
     
-    // MARK: - Methods
     func updatePosition(for category: ItemType, to position: CGPoint) {
         switch category {
         case .tops:
@@ -113,7 +101,6 @@ final class Style {
         }
     }
     
-    // Get style creation date formatted
     var formattedCreationDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium

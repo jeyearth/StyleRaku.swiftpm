@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  StylePreviewView.swift
 //  StyleRaku
 //
 //  Created by Jey Hirano on 2025/01/19.
@@ -26,7 +26,6 @@ struct StylePreviewView: View {
         self._selectedItem = selectedItem
     }
     
-    // 画像表示用のビューコンポーネント
     @ViewBuilder
     private func itemImageView(size: CGFloat, type: ItemType, image: UIImage, position: CGPoint, maxSize: CGSize) -> some View {
         Image(uiImage: image)
@@ -39,38 +38,23 @@ struct StylePreviewView: View {
                     .stroke((self.selectedItemType == type ? Color.accentColor : Color.clear), lineWidth: 3)
                     .fill(self.draggingItem?.type == type && self.isDropping ? Color.gray.opacity(0.4) : Color.clear)
             )
-//            .position(position)
             .offset(
                 x: self.adjustPosition(size: size, position: position.x, imageSize: image.size, maxSize: maxSize, axis: true),
                 y: self.adjustPosition(size: size,
                                        position: self.calcPositionY(position: position, type: type, size: size, imageSize: image.size),
                                        imageSize: image.size, maxSize: maxSize, axis: false)
             )
-//            .offset(x: position.x - (size / image.size.width) * image.size.width / 2, y: position.y - (size / image.size.width) * image.size.height / 2)
             .onTapGesture {
                 self.selectedItemType = type
                 self.selectedItem = selectedStyle?.getItem(type)
             }
-//            .gesture(
-//                DragGesture()
-//                    .onChanged { gesture in
-//                        if let unwrap = selectedStyle {
-//                            unwrap.updatePosition(for: type, to: gesture.location)
-//                        }
-//                        self.selectedItemType = type
-//                        print(gesture.location)
-//                    }
-//                    .onEnded {_ in 
-//                        self.selectedItemType = nil
-//                    }
-//            )
     }
     
     private func adjustPosition(size: CGFloat, position: CGFloat, imageSize: CGSize, maxSize: CGSize, axis: Bool) -> CGFloat {
         var newPosition: CGFloat = position
         
         if axis {
-            // X軸
+            // X
             let halfSizeW = size / 2
             
             let minX = halfSizeW - maxSize.width / 2
@@ -82,7 +66,7 @@ struct StylePreviewView: View {
                 newPosition = maxX
             }
         } else {
-            // Y軸
+            // Y
             let halfSizeH = (size / imageSize.width) * imageSize.height / 2
             
             let minY = halfSizeH - maxSize.height / 2
@@ -161,10 +145,6 @@ struct StylePreviewView: View {
             }
         } // VStack
         .padding()
-//        .overlay(  // 枠線を動的に表示
-//            RoundedRectangle(cornerRadius: 10)
-//                .stroke(isDropping ? Color.blue : Color.clear, lineWidth: 4)
-//        )
         .onDrop(of: ["public.text"], isTargeted: Binding(
             get: { isDropping },
             set: { isDropping = $0 }

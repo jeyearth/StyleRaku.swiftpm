@@ -11,20 +11,17 @@ import UIKit
 struct FileManagerUtil {
     static let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     
-    // ユニークな画像ファイル名を生成
     static func getUniqueImageFileName() -> String {
         return UUID().uuidString + ".png"
     }
     
-    // 透過png対応メソッド
     static func saveImage(_ image: UIImage, fileName: String) -> String? {
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         
-        // PNGデータを取得
         if let data = image.pngData() {
             do {
                 try data.write(to: fileURL)
-                return fileURL.lastPathComponent // 保存したファイル名を返す
+                return fileURL.lastPathComponent
             } catch {
                 print("Error saving image: \(error)")
                 return nil
@@ -35,13 +32,11 @@ struct FileManagerUtil {
         }
     }
     
-    /// 画像を読み込み
     static func loadImage(fileName: String) -> UIImage? {
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         return UIImage(contentsOfFile: fileURL.path)
     }
     
-    /// 画像を削除
     static func deleteImage(fileName: String) {
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         if FileManager.default.fileExists(atPath: fileURL.path) {

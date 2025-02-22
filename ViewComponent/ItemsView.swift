@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  ItemsView.swift
 //  StyleRaku
 //
 //  Created by Jey Hirano on 2025/01/23
@@ -24,7 +24,7 @@ struct ItemsView: View {
     
     var body: some View {
         ZStack {
-            Color(.systemGray6)   // 背景色
+            Color(.systemGray6)
                 .edgesIgnoringSafeArea(.bottom)
             VStack {
                 Picker("ItemType", selection: $selectedItemViewType) {

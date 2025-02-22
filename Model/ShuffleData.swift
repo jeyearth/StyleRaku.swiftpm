@@ -136,7 +136,6 @@ final class ShuffleData {
         
         let availableItems = targetItems.filter { $0.id != excludingItem?.id }
         
-        // 空でなければランダムで返す
         return availableItems.randomElement()
     }
     

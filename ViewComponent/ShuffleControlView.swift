@@ -40,17 +40,13 @@ struct ShuffleControlView: View {
             .padding(6)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(.systemBackground)) // 背景色を白に設定
+                    .fill(Color(.systemBackground))
             )
         }
         .padding(.top, 10)
         .padding([.leading, .trailing], 10)
         .padding(.bottom, 5)
     }
-    
-    //
-    // MARK: - LockButtonView
-    //
     
     @ViewBuilder
     private func LockButtonView() -> some View {
@@ -84,9 +80,6 @@ struct ShuffleControlView: View {
         }
     }
     
-    //
-    // MARK: - SeasonsSettingView
-    //
     @ViewBuilder
     private func SeasonsSettingView() -> some View {
         VStack {
@@ -117,10 +110,6 @@ struct ShuffleControlView: View {
         .foregroundColor(Color.primary)
     }
     
-    //
-    // MARK: - ShuffleButton
-    //
-    
     @ViewBuilder
     private func ShuffleButton() -> some View {
         Button {
@@ -137,7 +126,7 @@ struct ShuffleControlView: View {
     }
     
     private func executeShuffle() {
-        print("do shuffle")
+        print("Shuffled")
         shuffleData.doShuffle()
         if let selectedTops = shuffleData.selectedTops {
             selectedStyle?.setItem(item: selectedTops)

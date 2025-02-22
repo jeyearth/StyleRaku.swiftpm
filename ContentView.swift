@@ -5,7 +5,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Query var styles: [Style]
     
-    @State var selectedStyle: Style? // サイドバーで選択された項目
+    @State var selectedStyle: Style?
     @State private var showingNewStyleSheet: Bool = false
     @State private var showingExistingStyleSheet: Bool = false
     
@@ -34,7 +34,7 @@ struct ContentView: View {
                         }
                         .contextMenu {
                             Button(action: {
-                                self.styleToEdit = style  // 編集対象のStyleを設定
+                                self.styleToEdit = style
                                 self.showingExistingStyleSheet.toggle()
                             }) {
                                 Label("Edit", systemImage: "square.and.pencil")
