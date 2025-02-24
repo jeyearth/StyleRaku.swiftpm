@@ -43,15 +43,15 @@ struct MyApp: App {
         
         let initialItems: [Item] = [
             // TOPS
-            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops01", true, true, true, true),
-            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops04", true, true, true, true),
-            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops06", true, true, true, true),
-            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops10", true, true, true, true),
-            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops15", true, true, true, true),
-            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops17", true, true, true, true),
+            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops01", true, false, true, true),
+            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops04", true, false, true, true),
+            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops06", true, false, true, true),
+            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops10", true, true, true, false),
+            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops15", false, false, false, true),
+            Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops17", false, false, true, true),
             
             // BOTTOMS
-            Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms03", true, true, true, true),
+            Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms03", true, true, true, false),
             Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms04", true, true, true, true),
             Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms05", true, true, true, true),
             Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms06", true, true, true, true),
@@ -59,7 +59,7 @@ struct MyApp: App {
             // SHOES
             Item(descriptionText: "Initial Shoes", type: .shoes, uiImageName: "shoes02", true, true, true, true),
             Item(descriptionText: "Initial Shoes", type: .shoes, uiImageName: "shoes05", true, true, true, true),
-            Item(descriptionText: "Initial Shoes", type: .shoes, uiImageName: "shoes07", true, true, true, true),
+            Item(descriptionText: "Initial Shoes", type: .shoes, uiImageName: "shoes07", false, true, false, false),
             Item(descriptionText: "Initial Shoes", type: .shoes, uiImageName: "shoes10", true, true, true, true),
             Item(descriptionText: "Initial Shoes", type: .shoes, uiImageName: "shoes11", true, true, true, true),
             
