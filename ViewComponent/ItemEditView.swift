@@ -242,10 +242,18 @@ struct FormSection: View {
     
     var body: some View {
         Form {
-            Picker("Type", selection: $inputItemType) {
+            Picker(selection: $inputItemType) {
                 Text("None").tag(nil as ItemType?)
                 ForEach(ItemType.allCases, id: \.self) { type in
                     Text(type.rawValue).tag(type as ItemType?)
+                }
+            } label: {
+                HStack {
+                    Text("Type")
+                    if inputItemType == nil {
+                        Text("*")
+                            .foregroundColor(.red)
+                    }
                 }
             }
             .pickerStyle(.menu)
@@ -305,7 +313,7 @@ struct PreviewSection: View {
                 }
             } else {
                 Spacer()
-                Text("No Image")
+                Text("No Subject")
                     .foregroundColor(.gray)
                 Spacer()
             }
@@ -369,6 +377,7 @@ struct PreviewSection: View {
                 }
                 isShowingCamera = false
             }
+            .ignoresSafeArea()
         }
     }
 }

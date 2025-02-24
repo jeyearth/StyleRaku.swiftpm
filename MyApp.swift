@@ -51,7 +51,6 @@ struct MyApp: App {
             Item(descriptionText: "Initial Tops", type: .tops, uiImageName: "tops17", true, true, true, true),
             
             // BOTTOMS
-            Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms01", true, true, true, true),
             Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms03", true, true, true, true),
             Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms04", true, true, true, true),
             Item(descriptionText: "Initial Bottoms", type: .bottoms, uiImageName: "bottoms05", true, true, true, true),

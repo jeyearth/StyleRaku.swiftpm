@@ -128,7 +128,7 @@ final class Item {
     }
     
     func getImage(imageName: String) -> UIImage? {
-        return FileManagerUtil.loadImage(fileName: imageName)
+        return FileManagerUtil.loadImage(fileName: imageName)?.resized(Percentage: 0.5)
     }
     
     func getImages() -> [UIImage]? {
@@ -200,8 +200,8 @@ final class Item {
         let ciImage = CIImage(cgImage: cgImage)
         print("Successfully converted to CIImage: \(ciImage)")
         
-        let imageHelper = ImageVisionHelper()
-        guard let outputCIImage = imageHelper.removeBackground(from: ciImage, croppedToInstanceExtent: true) else {
+        let imageHelper = SubjectLiftingHelper()
+        guard let outputCIImage = imageHelper.doSubjectLifting(from: ciImage, croppedToInstanceExtent: true) else {
             print("Subject is missing.")
             return nil
         }

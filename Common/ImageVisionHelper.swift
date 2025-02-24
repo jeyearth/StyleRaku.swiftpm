@@ -10,39 +10,45 @@ import Foundation
 import CoreImage
 import Vision
 
-struct ImageVisionHelper {
+struct SubjectLiftingHelper {
     
-    func render(ciImage img: CIImage) -> CGImage {
-        guard let cgImage = CIContext(options: nil).createCGImage(img, from: img.extent) else {
-            fatalError("failed to render CIImage")
-        }
-        return cgImage
+    private let ciContext: CIContext
+    
+    init() {
+        self.ciContext = CIContext()
     }
     
-    func removeBackground(from image: CIImage, croppedToInstanceExtent: Bool) -> CIImage? {
+    func render(ciImage img: CIImage) -> CGImage? {
+        return ciContext.createCGImage(img, from: img.extent)
+    }
+    
+    func doSubjectLifting(from image: CIImage, croppedToInstanceExtent: Bool) -> CIImage? {
         let request = VNGenerateForegroundInstanceMaskRequest()
-        let handler = VNImageRequestHandler(ciImage: image)
+        let handler = VNImageRequestHandler(ciImage: image, options: [:])
         
         do {
             try handler.perform([request])
         } catch {
-            print ("Failed to perform vision request")
+            print("Vision request execution failed: \(error.localizedDescription)")
             return nil
         }
         
         guard let result = request.results?.first else {
-            print("No subject observation found")
+            print("No Subject Found")
             return nil
         }
         
         do {
-            let maskedImage = try result.generateMaskedImage(ofInstances: result.allInstances, from: handler, croppedToInstancesExtent: croppedToInstanceExtent)
-            return CIImage(cvPixelBuffer: maskedImage)
+            let mask = try result.generateMaskedImage(
+                ofInstances: result.allInstances,
+                from: handler,
+                croppedToInstancesExtent: croppedToInstanceExtent
+            )
+            return CIImage(cvPixelBuffer: mask)
         } catch {
-            print("Failed to generate masked image")
+            print("Generation of mask image failed: \(error.localizedDescription)")
             return nil
         }
-        
     }
     
 }

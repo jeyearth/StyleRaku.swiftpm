@@ -6,7 +6,7 @@
 //  
 //
 
-import Foundation
+import SwiftUI
 
 extension CGPoint {
     var toString: String {
@@ -18,5 +18,16 @@ extension CGPoint {
         let x = Double(components.first ?? "0") ?? 0
         let y = Double(components.last ?? "0") ?? 0
         self.init(x: x, y: y)
+    }
+}
+
+extension UIImage {
+    func resized(Percentage percentage: CGFloat) -> UIImage? {
+        let resizeSize = CGSize(width: size.width * percentage, height: size.height * percentage)
+        
+        return UIGraphicsImageRenderer(size: resizeSize, format: imageRendererFormat).image
+        {
+            _ in draw(in: CGRect(origin: .zero, size: resizeSize))
+        }
     }
 }
