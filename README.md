@@ -1,5 +1,7 @@
 # StyleRaku
 
+<img src="https://github.com/user-attachments/assets/cc370293-be05-458a-97ac-9b9aa1f66ae0" style="width:10%;">
+
 服を登録して自由に組み合わせ、視覚的にコーディネートを楽しめるファッションシミュレータiPadアプリ。
 
 ## 制作背景
@@ -42,4 +44,3 @@
 ![styleraku02](https://github.com/user-attachments/assets/7c3d5cc6-e18c-4121-a8e5-c1afd33a05c3)
 
 ![styleraku03](https://github.com/user-attachments/assets/19daf43f-7615-4bda-b543-fcf8ef045748)
-
